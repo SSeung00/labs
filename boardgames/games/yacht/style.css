@@ -1,0 +1,209 @@
+/* Yacht Dice. Sizes come from ui.js: --ds (die size), --rh (sheet row height), --lw (label column), --nc (player columns) */
+.yt{height:100%; position:relative; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr) auto;
+  grid-template-areas:"strip" "sheet" "dock"; --ds:56px; --rh:44px; --lw:80px; --nc:1}
+.yt.land{grid-template-columns:minmax(260px,40%) minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); grid-template-areas:"strip sheet" "dock sheet"}
+
+/* ---------- Die faces (also the small ones in the sheet labels) ---------- */
+.yt-face{display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); flex:0 0 auto; width:var(--ds); height:var(--ds);
+  padding:calc(var(--ds) * .14); border-radius:calc(var(--ds) * .2);
+  background:radial-gradient(circle at 30% 25%, #fffefa 0%, #f3ecdd 55%, #dcd1bb 100%);
+  box-shadow:inset 0 calc(var(--ds) * -.05) 0 rgba(0,0,0,.14), inset 0 1px 0 #fff, 0 4px 10px rgba(0,0,0,.45);
+  transition:transform .15s, box-shadow .15s, background .15s}
+.yt-face i{width:calc(var(--ds) * .19); height:calc(var(--ds) * .19); border-radius:50%; place-self:center;
+  background:radial-gradient(circle at 35% 35%, #57504a, #121010 70%)}
+.yt-face.f1 i{width:calc(var(--ds) * .3); height:calc(var(--ds) * .3); background:radial-gradient(circle at 35% 35%, #ff7a6b, #b51f17 70%)}
+.yt-mini{--ds:15px; display:inline-flex; flex:0 0 auto}
+.yt-mini .yt-face{padding:2px; border-radius:4px; box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.yt-mini .yt-face i{width:3px; height:3px; background:#1d1a17}
+.yt-mini .yt-face.f1 i{width:5px; height:5px; background:#c8302c}
+
+/* ---------- Players strip ---------- */
+.yt-strip{grid-area:strip; display:flex; gap:5px; padding:7px 6px 7px; overflow-x:auto; scrollbar-width:none; min-width:0}
+.yt-strip::-webkit-scrollbar{display:none}
+.yt-pl{flex:1 1 0; min-width:0; max-width:170px; position:relative; display:flex; align-items:center; gap:6px; padding:5px 7px 5px 5px;
+  border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,.3); text-align:left; min-height:42px}
+.yt-pl .av{width:26px; height:26px; font-size:12px}
+.yt-pi{display:flex; flex-direction:column; min-width:0; line-height:1.15}
+.yt-pn{display:flex; align-items:center; gap:3px; min-width:0; font-size:11.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.yt-me{font-style:normal; font-size:9px; font-weight:800; color:var(--green); flex:0 0 auto}
+.yt-ps{display:flex; align-items:baseline; gap:5px; white-space:nowrap; min-width:0}
+.yt-ps b{font-size:18px; font-weight:900; font-variant-numeric:tabular-nums; color:#f4f1e6}
+/* Last move badge on the chip's lower edge (points of the last category, or the roll count while rolling) */
+.yt-lb{position:absolute; bottom:-6px; right:4px; z-index:1; font-size:9.5px; font-weight:800; line-height:13px; padding:0 4px; border-radius:5px;
+  background:var(--bg2); border:1px solid var(--line2); color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+.yt-lb.now{color:var(--gold2); border-color:rgba(230,195,106,.7)}
+.yt-lb.roll{color:#1d1406; background:var(--gold2); border-color:var(--gold2)}
+.yt-pl.turn{border-color:var(--gold); background:rgba(230,195,106,.14); box-shadow:0 0 0 1px var(--gold), 0 0 14px rgba(230,195,106,.35)}
+.yt-pl.me .av{box-shadow:0 0 0 2px var(--green)}
+.yt-best{font-size:20px; justify-content:center; background:rgba(230,195,106,.08); border-style:dashed; border-color:rgba(230,195,106,.45)}
+.yt-ai{position:absolute; top:-6px; left:4px; font-size:8px; font-weight:700; line-height:1.3; padding:0 3px; border-radius:3px; border:1px solid var(--line2);
+  color:var(--muted); background:var(--bg2)}
+.yt-ai.away{color:#ff9b8f; border-color:rgba(255,155,143,.5)}
+.yt-rk{position:absolute; top:-6px; right:-2px; z-index:1; font-style:normal; min-width:17px; height:17px; padding:0 3px; border-radius:9px; display:grid; place-items:center;
+  font-size:10px; font-weight:900; background:var(--panel2); border:1px solid var(--line2); color:var(--muted)}
+.yt-rk.r1{background:linear-gradient(180deg,#f3d48a,#b98a2f); color:#2a1c06; border-color:transparent}
+.yt-rk.r2{background:linear-gradient(180deg,#e4e8ee,#9aa3ae); color:#1e2329; border-color:transparent}
+.yt-rk.r3{background:linear-gradient(180deg,#e2a77a,#9a5c33); color:#2a1407; border-color:transparent}
+.yt.land .yt-strip:not(.list){flex-wrap:wrap; row-gap:10px}
+.yt.land .yt-strip:not(.list) .yt-pl{flex:1 1 64px}
+/* Upper-section progress: only in the sideways list */
+.yt-pu{display:none}
+.yt-strip.list{flex-direction:column; gap:8px; overflow-x:hidden; overflow-y:auto; padding:10px 8px 6px}
+.yt-strip.list .yt-pl{flex:0 0 auto; max-width:none; width:100%; min-height:42px; padding:3px 12px 3px 8px; gap:9px}
+.yt-strip.list .yt-pl .av{width:30px; height:30px; font-size:14px}
+.yt-strip.list .yt-pi{flex:1 1 auto; display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"n t" "u t"; column-gap:8px; align-items:center}
+.yt-strip.list .yt-pn{grid-area:n; font-size:14px}
+.yt-strip.list .yt-pu{grid-area:u; display:block; font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.yt-strip.list .yt-ps{grid-area:t}
+.yt-strip.list .yt-ps b{font-size:24px}
+.yt-strip.list .yt-lb{bottom:auto; top:-7px; right:12px; font-size:10.5px; line-height:14px}
+.yt-strip.list .yt-rk{right:auto; left:-5px; top:-7px}
+.yt-strip.list .yt-ai:not(.away){display:none}
+.yt-strip.list .yt-ai.away{left:auto; right:60px}
+/* Many players: avatar + total on one line, the name under it */
+.yt-strip.many{gap:3px}
+.yt-strip.many .yt-pl{display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; column-gap:3px; row-gap:0; padding:5px 3px 3px; min-height:40px}
+.yt-strip.many .yt-pl .av{width:20px; height:20px; font-size:10px}
+.yt-strip.many .yt-pi{display:contents}
+.yt-strip.many .yt-ps{grid-row:1; grid-column:2; justify-content:center}
+.yt-strip.many .yt-ps b{font-size:15px}
+.yt-strip.many .yt-me{display:none}
+.yt-strip.many .yt-pn{grid-row:2; grid-column:1 / 3; justify-content:center; font-size:9.5px; font-weight:600}
+.yt-strip.many .yt-ai:not(.away){display:none}
+.yt-strip.many .yt-rk:not(.r1):not(.r2):not(.r3){display:none}
+.yt-strip.lots .yt-ps b{font-size:13.5px}
+.yt-strip.lots .yt-pl .av{width:17px; height:17px; font-size:9px}
+
+/* ---------- Score sheet ---------- */
+.yt-sheet{grid-area:sheet; min-height:0; overflow-y:auto; display:flex; gap:6px; align-items:flex-start; justify-content:center; padding:3px 6px 5px}
+.yt.land .yt-sheet{padding:7px 8px 6px 2px; align-items:center}
+.yt-half{flex:1 1 0; min-width:0; max-width:760px; display:flex; flex-direction:column; border-radius:12px; overflow:hidden; background:rgba(0,0,0,.24);
+  border:1px solid var(--line); box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.yt-row{display:grid; grid-template-columns:var(--lw) repeat(var(--nc), minmax(0,1fr)); align-items:stretch; height:var(--rh); border-top:1px solid var(--line); flex:0 0 auto}
+.yt-row.lo:nth-child(odd), .yt-row.up:nth-child(even){background:rgba(255,255,255,.025)}
+.yt-hd{height:max(26px, calc(var(--rh) * .62)); border-top:0; background:rgba(0,0,0,.28)}
+.yt-ft{height:max(32px, calc(var(--rh) * .9)); background:rgba(0,0,0,.2); border-top:1px solid var(--line2)}
+.yt-sheet.one .yt-row.lo[data-c="6"]{border-top:1px solid var(--line2)}
+.yt-lab{display:flex; align-items:center; gap:5px; padding:0 3px 0 6px; min-width:0; overflow:hidden}
+.yt-hd .yt-lab{font-size:11px; color:var(--muted); font-weight:700; white-space:nowrap}
+.yt-hd .yt-lab.more{color:var(--gold2); cursor:pointer}
+.yt-ln{display:flex; flex-direction:column; min-width:0; line-height:1.12}
+.yt-ln b{font-size:min(var(--lf, 14px), calc(var(--rh) * .34)); font-weight:700; word-break:keep-all; overflow-wrap:anywhere}
+.yt-ln small{display:none; font-size:clamp(9.5px, calc(var(--rh) * .21), 12px); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.yt-sheet.wide .yt-ln small{display:block}
+.yt-ft .yt-ln small{display:block}
+.yt-c{display:flex; align-items:center; justify-content:center; min-width:0; border-left:1px solid var(--line); font-size:var(--cf, 15px); font-weight:800;
+  font-variant-numeric:tabular-nums; color:#f4f1e6; white-space:nowrap}
+.yt-c.cur{background:rgba(230,195,106,.08)}
+.yt-c.done.zero{color:var(--faint); font-weight:600}
+.yt-c.done.just{color:var(--gold2)}
+.yt-c.pot{color:rgba(245,220,148,.82); font-weight:600}
+.yt-c.pot.zero{color:rgba(241,237,226,.25)}
+.yt-c.pot.hi{color:var(--gold2); font-weight:800}
+.yt-c.pot.best{color:#d8ffe6; font-weight:900; background:rgba(92,196,137,.24); box-shadow:inset 0 0 0 2px rgba(92,196,137,.75)}
+.yt-c.best i{font-style:normal; font-size:.62em; color:var(--gold2); margin-right:1px}
+.yt-c.pop{animation:ytPop .6s ease}
+@keyframes ytPop{30%{transform:scale(1.35); color:var(--gold2)}}
+.yt-hd .yt-c{display:flex; align-items:center; justify-content:center; gap:4px; padding:0 2px; font-size:11px; font-weight:700; color:var(--muted); cursor:pointer}
+.yt-hd .yt-c em{font-style:normal; min-width:0; overflow:hidden; text-overflow:ellipsis; display:none}
+.yt-sheet.roomy .yt-hd .yt-c em{display:block}
+.yt-hd .yt-c .av{width:20px; height:20px; font-size:10px}
+.yt-hd .yt-c.cur{color:var(--gold2); background:rgba(230,195,106,.16)}
+.yt-hd .yt-c.cur .av{box-shadow:0 0 0 2px var(--gold)}
+.yt-hd .yt-c.me em{color:var(--green)}
+/* My turn: rows I can fill are buttons */
+.yt-row.can{cursor:pointer}
+.yt-row.can:active{background:rgba(255,255,255,.07)}
+@media (hover:hover){ .yt-row.can:hover{background:rgba(255,255,255,.06)} }
+.yt-row.rbest .yt-lab b{color:#bff0d2}
+.yt-row.sel{background:rgba(230,195,106,.24) !important; box-shadow:inset 0 0 0 2px var(--gold)}
+.yt-row.sel .yt-lab b{color:var(--gold2)}
+.yt-sheet.active .yt-row.yt-cat:not(.can){opacity:.72}
+/* Bonus and total rows */
+.yt-bon .yt-c{display:flex; flex-direction:column; justify-content:center; gap:3px; font-size:min(calc(var(--cf, 15px) * .85), calc(var(--rh) * .3))}
+.yt-bn small{font-size:.62em; color:var(--muted); font-weight:600}
+.yt-sheet.narrow .yt-bn small{display:none}
+.yt-bar{width:72%; max-width:60px; height:4px; border-radius:2px; background:rgba(255,255,255,.12); overflow:hidden}
+.yt-bar i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); border-radius:2px}
+.yt-bon .yt-c.ok{color:var(--green)}
+.yt-bon .yt-c.no{color:var(--faint)}
+.yt-bon .yt-c.no .yt-bar{opacity:.3}
+.yt-tot .yt-c{color:var(--gold2); font-size:var(--tf, 16px); font-weight:900}
+.yt-tot .yt-c.lead{background:rgba(230,195,106,.16)}
+
+/* ---------- Dock: summary · hint · dice · buttons ---------- */
+.yt-dock{grid-area:dock; display:flex; flex-direction:column; justify-content:center; padding:5px 10px calc(8px + env(safe-area-inset-bottom,0px)); min-width:0}
+.yt.land .yt-dock{border-top:0; background:none; padding:4px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+.yt-info{display:flex; flex-wrap:wrap; justify-content:center; gap:4px}
+.yt-chip{font-size:12px; line-height:1.55; padding:0 8px; border-radius:999px; background:rgba(255,255,255,.07); border:1px solid var(--line); white-space:nowrap}
+.yt-chip b{font-size:13px; color:#f4f1e6}
+.yt-chip.ok{color:#8fe0b0; border-color:rgba(92,196,137,.5)}
+.yt-chip.good{color:var(--gold2); border-color:rgba(230,195,106,.55)}
+.yt-chip.bad{color:#ff9b8f; border-color:rgba(255,155,143,.45)}
+.yt-chip.dim{color:var(--muted)}
+.yt-hint{margin:3px 0 0; font-size:12.5px; line-height:1.35; word-break:keep-all}
+.yt-tray{display:flex; justify-content:center; gap:10px; padding:max(6px, calc(var(--ds) * .14)) 0 0}
+.yt-die{width:var(--ds); padding:0; border:0; background:none; display:flex; flex-direction:column; align-items:center; gap:2px; color:inherit; -webkit-user-select:none; user-select:none}
+.yt-die:disabled{cursor:default}
+.yt-tag{font-style:normal; font-size:10px; font-weight:900; letter-spacing:.05em; line-height:14px; height:14px; padding:0 5px; border-radius:4px; color:#1d1406;
+  background:var(--gold2); visibility:hidden}
+.yt-die.held .yt-tag{visibility:visible}
+.yt-die.held .yt-face{transform:translateY(-4px); background:radial-gradient(circle at 30% 25%, #fffaf0 0%, #f6e7c4 60%, #e2c98f 100%);
+  box-shadow:0 0 0 3px var(--gold), 0 9px 16px rgba(0,0,0,.5)}
+.yt-tray.can .yt-die:not(.held) .yt-face{box-shadow:inset 0 calc(var(--ds) * -.05) 0 rgba(0,0,0,.14), 0 0 0 2px rgba(255,255,255,.35), 0 4px 10px rgba(0,0,0,.45)}
+.yt-tray.can .yt-die{cursor:pointer}
+.yt-tray.stale .yt-face{opacity:.42; filter:saturate(.5)}
+.yt-die.rolling .yt-face{animation:ytTumble .28s ease-in-out infinite alternate}
+.yt-die.land .yt-face{animation:ytLand .3s ease-out}
+@keyframes ytTumble{0%{transform:translateY(0) rotate(-14deg)} 50%{transform:translateY(-10px) rotate(9deg) scale(1.04)} 100%{transform:translateY(-3px) rotate(18deg)}}
+@keyframes ytLand{0%{transform:translateY(-8px) rotate(6deg)} 60%{transform:translateY(1px) rotate(-2deg)} 100%{transform:none}}
+.yt-acts{margin-top:6px; min-height:46px}
+.yt-acts .btn{min-height:46px; padding:8px 10px; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; overflow:hidden}
+.yt-acts .yt-ok b{font-size:17px}
+.yt-acts .yt-roll.slim{flex:0 0 auto; padding:8px 12px}
+.yt.land .yt-tray{gap:8px}
+.yt-rl{display:inline-flex; gap:3px; margin-left:2px}
+.yt-rl i{width:7px; height:7px; border-radius:50%; border:1.5px solid currentColor; opacity:.55}
+.yt-rl i.on{background:currentColor; opacity:1}
+.yt-acts.idle{justify-content:center}
+.yt-watch{flex:1; min-height:46px; display:flex; align-items:center; justify-content:center; gap:10px; border-radius:11px; border:1px dashed var(--line2);
+  font-size:13px; color:var(--muted); padding:0 10px; white-space:nowrap; overflow:hidden}
+.yt-watch b{color:var(--gold2); font-size:15px}
+.yt-watch .yt-rl{color:var(--gold2)}
+.yt-watch .av{width:24px; height:24px; font-size:11px}
+.yt.spec .yt-hint{font-size:13.5px}
+
+/* ---------- Banners and the flying score ---------- */
+.yt-banner{position:absolute; inset:0; z-index:6; display:grid; place-items:center; pointer-events:none}
+.yt-banner > div{display:flex; flex-direction:column; align-items:center; padding:14px 30px 12px; border-radius:18px; background:rgba(10,20,14,.9); border:1px solid var(--gold);
+  box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.yt-banner b{font-size:34px; line-height:1.1; color:var(--gold2); font-weight:900; letter-spacing:.02em}
+.yt-banner small{font-size:15px; color:#f4f1e6; font-weight:700}
+.yt-banner.yacht b{font-size:46px; background:linear-gradient(90deg,#ffd76a,#ff8a5c,#7ee0ff,#b28bff); -webkit-background-clip:text; background-clip:text; color:transparent}
+.yt-banner.bonus > div{border-color:var(--green)}
+.yt-banner.bonus b{color:#9ff0c0}
+.yt-banner.on{animation:ytBanner 1.8s ease forwards}
+@keyframes ytBanner{0%{opacity:0; transform:scale(.7)} 14%{opacity:1; transform:scale(1.06)} 22%{transform:none} 82%{opacity:1} 100%{opacity:0; transform:translateY(-14px)}}
+.yt-flyv{display:grid; place-items:center; border-radius:10px; background:var(--gold2); color:#1d1406; font:900 20px/1 var(--font); box-shadow:0 8px 20px rgba(0,0,0,.5)}
+
+/* ---------- Full score sheet (modal) ---------- */
+.yt-modal{max-width:640px}
+.yt-fullwrap{overflow-x:auto; margin:4px -8px 0; padding:0 2px}
+table.yt-full{width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums}
+table.yt-full th, table.yt-full td{padding:5px 3px; border-top:1px solid var(--line); text-align:center; white-space:nowrap}
+table.yt-full tbody th{text-align:left; font-weight:600; color:var(--ink); padding-left:4px}
+table.yt-full .yt-fl{display:flex; align-items:center; gap:5px}
+table.yt-full thead th{border-top:0; font-size:11px; font-weight:700; color:var(--muted); vertical-align:bottom}
+table.yt-full thead th em{display:block; font-style:normal; max-width:64px; margin:2px auto 0; overflow:hidden; text-overflow:ellipsis}
+table.yt-full thead th .av{width:22px; height:22px; font-size:10px}
+table.yt-full td{font-weight:700}
+table.yt-full .sel{background:rgba(230,195,106,.13)}
+table.yt-full thead th.sel{color:var(--gold2)}
+table.yt-full tr.sub th, table.yt-full tr.sub td{font-size:12px; color:var(--muted); font-weight:600; background-color:rgba(0,0,0,.15)}
+table.yt-full tr.sub td small{font-size:.8em; opacity:.7}
+table.yt-full tr.tot th, table.yt-full tr.tot td{border-top:1px solid var(--line2); font-size:15px}
+table.yt-full tr.tot td b{color:var(--gold2)}
+.yt-empty{color:var(--faint)}
+.yt-z{color:var(--faint)}
+.yt-strip.many .yt-lb{bottom:auto; top:-6px; right:auto; left:1px; font-size:9px; padding:0 3px}
+.yt-strip.many{padding-top:9px}

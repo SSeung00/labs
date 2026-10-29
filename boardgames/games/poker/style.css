@@ -1,0 +1,374 @@
+/* Poker — cards and text scale with the measured screen height (container units, cqh). No scrolling from 360×640 to 430×932.
+   The spectator layout (watching screens, TVs) and the sideways layout (phones held sideways … TVs) are at the end. */
+.pk{height:100%; display:flex; flex-direction:column; container:pk / size}
+
+/* ---------- Opponent panels ---------- */
+.pk-opps{display:grid; gap:5px; padding:6px 8px 3px; flex:0 0 auto; --fs:clamp(12px, 1.75cqh, 15px)}
+.pk-opps.c1{grid-template-columns:minmax(0,1fr); --fs:clamp(13px, 2cqh, 16px)}
+.pk-opps.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pk-opps.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pk-opps.c4{grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; padding:5px 6px 3px; --fs:clamp(11.5px, 1.5cqh, 13px)}
+.pk-opps.c3.r2{--fs:clamp(11.5px, 1.65cqh, 14px)}
+/* 4 opponents: a bigger 2×2 grid when there is room */
+@container pk (min-height:680px){
+  .pk-opps.n4{grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; padding:6px 8px 3px; --fs:clamp(12px, 1.7cqh, 15px)}
+}
+/* Panel: name row / chips · cards / last action · bet / this hand's history */
+.seatchip.pk-seat{position:relative; flex-direction:column; align-items:stretch; gap:2px; padding:5px 7px 6px; border-radius:12px; min-width:0; font-size:var(--fs); line-height:1.25; overflow:hidden; transition:opacity .2s, border-color .2s}
+.pk-s2, .pk-s3{display:flex; justify-content:space-between; align-items:center; gap:4px; min-width:0; min-height:calc(var(--fs) * 1.45)}
+.pk-rt2{display:flex; flex:0 0 auto}
+/* One opponent (heads-up): a wide panel with two big cards */
+.pk-opps.wide .seatchip.pk-seat{display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"s1 hc" "stk hc" "s3 hc" "hist hc"; gap:3px 10px; padding:8px 10px}
+.pk-opps.wide .pk-s1{grid-area:s1} .pk-opps.wide .pk-s2{display:contents} .pk-opps.wide .pk-stk{grid-area:stk} .pk-opps.wide .pk-hc{grid-area:hc}
+.pk-opps.wide .pk-s3{grid-area:s3; justify-content:flex-start} .pk-opps.wide .pk-hist{grid-area:hist}
+.pk-opps.wide .pk-stk{font-size:calc(var(--fs) * 1.35)}
+.pk-opps.wide .pk-hc{gap:5px}
+.pc.pk-oc{--ch:clamp(54px, 10cqh, 96px); --cw:calc(var(--ch) / 1.4)}
+.pc.pk-oc .pc-corner{font-size:calc(var(--cw) * .3); top:calc(var(--cw) * .05); left:calc(var(--cw) * .07)} .pc.pk-oc .pc-corner i{font-size:calc(var(--cw) * .22)} .pc.pk-oc .pc-mid{font-size:calc(var(--cw) * .5)} .pc.pk-oc .pc-corner.br{display:none}
+/* Spectator panels with room (two per row): real cards beside the stack */
+.pk-opps.big:not(.wide) .pc.pk-oc{--ch:calc(var(--fs) * 3.3)}
+.pk-opps.big:not(.wide) .pk-hc{gap:4px}
+.pk-opps.big:not(.wide) .pk-stk{font-size:calc(var(--fs) * 1.3)}
+.pk-mini.pk-new, .pc.pk-oc.pk-new{animation:pkFlip .45s ease both}
+/* Per-seat actions this hand — only when there is room */
+.pk-hist{display:none; align-items:center; gap:0 4px; font-size:calc(var(--fs) * .8); color:var(--muted); white-space:nowrap; overflow:hidden; min-width:0; line-height:1.4; border-top:1px solid var(--line); padding-top:2px; margin-top:1px}
+.pk-hist:empty{display:none!important}
+.pk-hist.cut::before{content:"…"; margin-right:-2px}
+.pk-he{display:inline-flex; gap:3px; flex:0 0 auto}
+.pk-hist i{font-style:normal; font-weight:800; color:var(--gold); opacity:.8; font-size:.9em}
+.pk-hist .raise, .pk-hist .bet{color:#ffc9b0}
+.pk-hist .call{color:#bcd6ff}
+.pk-hist .allin{color:#ff9b8f; font-weight:700}
+.pk-opps.c1 .pk-hist, .pk-opps.c2 .pk-hist, .pk-opps.c3:not(.r2) .pk-hist{display:flex}
+@container pk (min-height:700px){ .pk-opps .pk-hist{display:flex} }
+.pk-opps.c4 .seatchip.pk-seat{padding:4px 5px 5px; border-radius:10px}
+.pk-seat .av.sm{width:calc(var(--fs) * 1.55); height:calc(var(--fs) * 1.55); font-size:calc(var(--fs) * .78); box-shadow:0 0 0 1.5px rgba(0,0,0,.4)}
+.pk-s1{display:flex; align-items:center; gap:4px; min-width:0}
+.pk-opps.c4 .pk-seat .av.sm{display:none}
+.pk-seat .nm{flex:1; min-width:0; max-width:none; font-size:var(--fs)}
+.pk-seat .away{font-size:calc(var(--fs) * .78); padding:0 3px}
+.pk-bs{display:flex; gap:2px; flex:0 0 auto}
+.pk-bs2{display:none}
+.pk-stk{font-weight:800; color:var(--gold2); font-variant-numeric:tabular-nums; font-size:calc(var(--fs) * 1.12); white-space:nowrap}
+.pk-hc{display:flex; gap:2px; flex:0 0 auto; justify-content:flex-end}
+.pk-st{min-width:0; overflow:hidden; display:flex}
+/* Last-action badge */
+.pk-ab{display:inline-block; max-width:100%; font-size:calc(var(--fs) * .9); font-weight:700; line-height:1.45; padding:0 6px; border-radius:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  background:rgba(255,255,255,.1); color:var(--ink)}
+.pk-ab.check{background:rgba(255,255,255,.1); color:#dfe7dc}
+.pk-ab.call{background:rgba(79,143,217,.28); color:#bcd6ff}
+.pk-ab.raise{background:rgba(224,121,74,.32); color:#ffd2bd}
+.pk-ab.allin{background:rgba(217,83,79,.45); color:#fff}
+.pk-ab.fold, .pk-ab.out{background:none; color:var(--muted); padding-left:0}
+.pk-ab.hand{background:rgba(0,0,0,.25); color:rgba(255,255,255,.8)}
+.pk-ab.won{background:rgba(92,196,137,.25); color:#bff0d2}
+.pk-dl{font-size:calc(var(--fs) * .95); font-variant-numeric:tabular-nums; white-space:nowrap}
+.pk-dl.up{color:var(--green)}
+.pk-dl.down{color:#ff9b8f; font-weight:600}
+.pk-tm{color:var(--gold2); font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap}
+.pk-tm.low{color:#ff9b8f}
+.pk-seat .pk-tm{font-size:calc(var(--fs) * .95)}
+.pk-tbar{position:absolute; left:0; right:0; bottom:0; height:3px; background:rgba(0,0,0,.35)}
+.pk-tbar i{display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); transition:width .25s linear}
+.pk-tbar i.low{background:var(--red)}
+.pk-tbar i.think{animation:blink 1.2s ease-in-out infinite}
+.pk-seat.pk-fold{opacity:.48}
+.pk-seat.pk-allin{border-color:rgba(255,155,143,.6)}
+.pk-seat.pk-win{opacity:1; border-color:var(--green); box-shadow:0 0 0 1px var(--green), 0 0 16px rgba(92,196,137,.35)}
+.pk-seat.turn{background:rgba(230,195,106,.14)}
+.pk-opps.c4 .pk-b{font-size:8.5px; padding:2px 3px}
+/* Narrow panels: tighter badge and bet chip so short action words ("Raise", "레이즈") fit beside the amount */
+.pk-opps.c4 .pk-s3{gap:2px}
+.pk-opps.c4 .pk-s2{flex-wrap:wrap; row-gap:1px}      /* shown cards drop below the stack instead of being cut off */
+.pk-opps.c4 .pk-ab{padding:0 3px}
+.pk-opps.c4 .pk-bet{padding:0 4px}
+.pk-opps.c4 .pk-b.d{width:14px; height:14px; padding:0}
+
+/* Position marks · chips · mini cards */
+.pk-b{font-style:normal; flex:0 0 auto; font-size:9.5px; font-weight:800; line-height:1; padding:2px 4px; border-radius:6px; background:rgba(255,255,255,.14); color:var(--ink); letter-spacing:.02em}
+.pk-b.d{background:#f4f1e6; color:#1b1b1b; border-radius:50%; width:15px; height:15px; padding:0; display:inline-grid; place-items:center}
+.pk-bet{flex:0 0 auto; font-size:calc(var(--fs, 13px) * .92); font-weight:800; color:#1b1b1b; background:linear-gradient(180deg,var(--gold2),var(--gold)); border-radius:999px; padding:0 6px; line-height:1.4; font-variant-numeric:tabular-nums}
+.pk-back{display:inline-block; width:calc(var(--fs) * .85); height:calc(var(--fs) * 1.2); border-radius:2px; background:var(--bk); border:1px solid #e9d7a8}
+.pk-mini{display:inline-block; font-size:calc(var(--fs, 13px) * .88); font-weight:800; line-height:1; padding:2px 2px; border-radius:3px; background:#fffdf7; color:#1b1b1b; min-width:1.9em; text-align:center}
+.pk-mini.red{color:#c8302c}
+/* Mini labels follow the four-colour and neon card designs */
+html[data-deck="four"] .pk-mini.s-D{color:#1f5fbf} html[data-deck="four"] .pk-mini.s-C{color:#1b7a3a}
+html[data-deck="neon"] .pk-mini{background:#141a26; color:#6fe3ff; box-shadow:inset 0 0 0 1px #34405a}
+html[data-deck="neon"] .pk-mini.red{color:#ff5c8a}
+html[data-deck="neon"] .pk-mini.hl{box-shadow:0 0 0 2px var(--gold2)}
+.pk-mini.hl{box-shadow:0 0 0 2px var(--gold2)}
+.pk-opps.c1 .pk-back{width:calc(var(--fs) * 1.3); height:calc(var(--fs) * 1.8)}
+.pk-opps.c1 .pk-mini{font-size:calc(var(--fs) * 1.05); padding:4px 3px}
+
+/* ---------- Felt ---------- */
+.pk-table{flex:1 1 0; min-height:0; margin:2px 8px 5px; border-radius:20px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly; gap:4px; padding:6px 8px;
+  box-shadow:inset 0 0 0 2px rgba(230,195,106,.25), inset 0 10px 40px rgba(0,0,0,.4); overflow:hidden; container-type:size}
+.pk-info{width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:12px; color:rgba(255,255,255,.75); min-height:22px; flex-wrap:wrap; flex:0 0 auto}
+.pk-info b{color:#fff}
+.pk-street{font-size:12px; padding:1px 9px; border-radius:999px; background:rgba(0,0,0,.35); color:var(--gold2)!important; border:1px solid rgba(230,195,106,.4)}
+.pk-lastbtn{font-size:11.5px; padding:2px 8px; min-height:24px; border-radius:999px; border:1px solid rgba(255,255,255,.3); background:rgba(0,0,0,.25); color:#fff}
+.pk-board{display:flex; gap:6px; justify-content:center; flex:0 0 auto}
+/* Board cards: sized to the smaller of the felt's width (5 cards) and height */
+.pk-table .pk-board .pc, .pk-table .pk-slot{--ch:min(calc((100cqw - 28px) / 5 * 1.4), 44cqh, 150px); --cw:calc(var(--ch) / 1.4)}
+.pk-ended .pk-table .pk-board .pc, .pk-ended .pk-table .pk-slot{--ch:min(calc((100cqw - 28px) / 5 * 1.4), 25cqh, 130px)}
+.pk-table .pk-board .pc .pc-corner, .pk-hole .pc .pc-corner{font-size:calc(var(--cw) * .27); top:calc(var(--cw) * .05); left:calc(var(--cw) * .07)}
+.pk-table .pk-board .pc .pc-corner i, .pk-hole .pc .pc-corner i{font-size:calc(var(--cw) * .21)}
+.pk-table .pk-board .pc .pc-corner.br, .pk-hole .pc .pc-corner.br{top:auto; left:auto; bottom:calc(var(--cw) * .05); right:calc(var(--cw) * .07)}
+.pk-table .pk-board .pc .pc-mid, .pk-hole .pc .pc-mid{font-size:calc(var(--cw) * .52)}
+.pk-slot{width:var(--cw); height:var(--ch); border-radius:6px; border:1.5px dashed rgba(255,255,255,.2); background:rgba(0,0,0,.1)}
+.pk-board .pc.pk-new{animation:pkFlip .45s ease both}
+@keyframes pkFlip{from{transform:translateY(-14px) rotateY(90deg); opacity:0}}
+.pc.pk-hl{box-shadow:0 0 0 3px var(--gold2), 0 0 16px rgba(245,220,148,.65), 0 3px 8px rgba(0,0,0,.4)}
+.pk-board .pc.dim{filter:brightness(.5)}
+.pk-board .pc.dim.d-neon{filter:saturate(.4) brightness(.85); opacity:.5}      /* a dark face would turn black */
+.pk-mid{flex:0 1 auto; min-height:0; width:100%; overflow-y:auto; display:flex; flex-direction:column; align-items:center; gap:4px; -webkit-overflow-scrolling:touch}
+.pk-ended .pk-mid{flex:1 1 auto; justify-content:flex-start}
+.pk-pot{display:flex; align-items:center; gap:7px; font-size:clamp(14px, 5.5cqh, 17px); color:#f4f1e6; padding:3px 14px; border-radius:999px; background:rgba(0,0,0,.32); flex-wrap:wrap; justify-content:center}
+.pk-pot b{color:var(--gold2); font-size:clamp(18px, 8cqh, 26px); font-variant-numeric:tabular-nums; line-height:1.2}
+.pk-cur{font-size:12px; color:rgba(255,255,255,.7); padding-left:8px; border-left:1px solid rgba(255,255,255,.2)}
+.pk-chipico{width:15px; height:15px; border-radius:50%; background:radial-gradient(circle, var(--gold) 0 35%, #fff 36% 48%, var(--gold) 49%); box-shadow:0 0 0 1.5px #8a6a1f}
+.pk-side{font-size:12.5px; color:rgba(255,255,255,.78)}
+.pk-side b{color:#fff; font-variant-numeric:tabular-nums}
+.pk-runout{font-size:13px; font-weight:800; color:#ffb4a8; animation:blink 1.2s ease-in-out infinite}
+.pk-line{font-size:13.5px; color:#f4f1e6; text-align:center; min-height:1.4em; padding:0 6px}
+
+/* This hand's action log (newest first) */
+.pk-log{width:100%; display:flex; flex-wrap:wrap; justify-content:center; align-content:flex-start; gap:3px 4px; max-height:43px; overflow:hidden; flex:0 0 auto}
+.pk-log:empty{display:none}
+.pk-lg{font-size:11.5px; line-height:20px; padding:0 8px; border-radius:999px; background:rgba(0,0,0,.3); color:#ddd8ca; white-space:nowrap; font-variant-numeric:tabular-nums}
+.pk-lg b{font-weight:700; color:#fff}
+.pk-lg.raise, .pk-lg.bet{color:#ffc9b0}
+.pk-lg.call{color:#bcd6ff}
+.pk-lg.allin{color:#fff; background:rgba(217,83,79,.5)}
+.pk-lg.fold{color:var(--muted)}
+.pk-lg.fold b{color:var(--muted)}
+.pk-lg.sb, .pk-lg.bb{color:var(--muted)}
+.pk-lg.me b{color:var(--green)}
+.pk-lg.new{box-shadow:0 0 0 1px rgba(245,220,148,.7) inset; background:rgba(0,0,0,.45)}
+.pk-lgst{font-size:10.5px; line-height:20px; color:var(--gold2); opacity:.7; padding:0 1px}
+@container (min-height:300px){ .pk-log{max-height:66px} }
+@container (max-height:200px){ .pk-info{display:none} .pk-log{max-height:20px} }
+@container (max-height:150px){ .pk-log{display:none} .pk-cur{display:none} }
+
+/* Hand results */
+.pk-res{width:100%; display:flex; flex-direction:column; gap:4px; animation:fade .25s}
+.pk-rt{text-align:center; font-size:12px; font-weight:800; letter-spacing:.12em; color:var(--gold2)}
+.pk-rt:empty{display:none}
+.pk-prow{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 8px; font-size:13.5px; padding:5px 8px; border-radius:10px; background:rgba(0,0,0,.3)}
+.pk-pl{color:rgba(255,255,255,.75)}
+.pk-pl b{color:#fff}
+.pk-pw{display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px}
+.pk-wn{display:inline-flex; align-items:center; gap:4px; color:var(--green); font-weight:700}
+.pk-wn b{color:#fff}
+.pk-pw em{font-style:normal; font-weight:800; color:var(--gold2)}
+.pk-shows{display:flex; flex-direction:column; gap:3px}
+/* Compact result rows on a short felt */
+@container (max-height:340px){
+  .pk-show{padding:2px 8px}
+  .pk-show .pc.sm{--cw:26px; --ch:37px}
+  .pk-show .pc.sm .pc-corner{font-size:10px; top:2px; left:3px} .pk-show .pc.sm .pc-corner i{font-size:8px} .pk-show .pc.sm .pc-mid{font-size:13px}
+  .pk-prow{padding:3px 8px}
+  .pk-ended .pk-info, .pk-rt{display:none}
+}
+.pk-show{display:grid; grid-template-columns:24px minmax(0,1fr) auto auto; align-items:center; gap:6px; padding:3px 8px; border-radius:10px; background:rgba(0,0,0,.18); font-size:13px}
+.pk-show .nm{font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.pk-show.me .nm{color:var(--green)}
+.pk-show.win{background:rgba(92,196,137,.18); box-shadow:0 0 0 1px rgba(92,196,137,.55) inset}
+.pk-cards{display:flex; gap:3px}
+.pk-hn{font-weight:800; color:var(--gold2); font-size:13px; white-space:nowrap; min-width:4.5em; text-align:right}
+.pk-show:not(.win) .pk-hn{color:rgba(255,255,255,.7)}
+.pk-nosd{text-align:center; font-size:12.5px; color:rgba(255,255,255,.75)}
+.pk-bust{text-align:center; font-size:13px; font-weight:700; color:#ffb4a8}
+.pk-mboard{margin:4px 0 10px}
+.pk-mboard .pc{--cw:40px; --ch:56px}
+.pk-mres .pk-prow{background:rgba(255,255,255,.05)}
+.pk-mres .pk-show{background:rgba(255,255,255,.04)}
+
+/* ---------- Bottom: my hand · calc · actions ---------- */
+.pk-dock{transition:box-shadow .2s; padding-top:7px}
+.pk-dock.pk-act{box-shadow:inset 0 2px 0 var(--gold), 0 -8px 24px -12px rgba(230,195,106,.5)}
+.pk-me{display:flex; align-items:center; gap:12px; padding:0 2px; --mf:clamp(13px, 2cqh, 17px)}
+.pk-hole{display:flex; gap:6px; flex:0 0 auto; align-items:center}
+/* My two cards: as big as the screen height allows */
+.pk-hole .pc{--ch:clamp(84px, 16.5cqh, 156px); --cw:calc(var(--ch) / 1.4)}
+.pk-many .pk-hole .pc{--ch:clamp(78px, 13.5cqh, 132px)}
+@container pk (max-height:700px){ .pk-ended .pk-hole .pc{--ch:clamp(64px, 11cqh, 140px)} }
+.pk-hole .pc.dim{opacity:.55}
+.pk-hole .pc.dim.d-neon{filter:saturate(.4)}
+.pk-nohole{width:134px; text-align:center; color:var(--muted); font-size:13px}
+.pk-mine{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; font-size:var(--mf)}
+.pk-mystk{display:flex; align-items:center; gap:5px; flex-wrap:wrap}
+.pk-mystk > b{font-size:calc(var(--mf) * 1.65); color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1.1}
+.pk-mystk small{color:var(--muted); font-size:12px; margin-right:2px}
+.pk-delta{font-size:calc(var(--mf) * .95); font-weight:800}
+.pk-delta.up{color:var(--green)}
+.pk-delta.down{color:#ff9b8f}
+.pk-mysub{display:flex; align-items:center; flex-wrap:wrap; gap:4px 10px; font-size:calc(var(--mf) * .88); color:var(--muted)}
+.pk-mysub:empty{display:none}
+.pk-mysub .pk-bet{font-size:calc(var(--mf) * .9); --fs:var(--mf)}
+.pk-mysub .pk-ab{--fs:var(--mf)}
+.pk-made{display:flex; align-items:baseline; flex-wrap:wrap; gap:0 6px; font-size:calc(var(--mf) * 1.06); color:#fff; min-height:1.3em; line-height:1.3}
+.pk-made:empty{display:none}
+.pk-made b{font-weight:800; color:#fff}
+.pk-mk{font-size:calc(var(--mf) * .75); font-weight:700; color:#1b1b1b; background:var(--gold2); border-radius:5px; padding:0 5px; align-self:center; line-height:1.5}
+.pk-dt{color:var(--gold2); font-weight:700}
+.pk-draw{font-size:calc(var(--mf) * .82); color:var(--muted); line-height:1.35}
+.pk-draw b{color:var(--ink)}
+.pk-good, .pk-made b.pk-good{color:var(--green)}
+.pk-folded{color:var(--muted); font-weight:700}
+
+/* Calc row */
+.pk-calc{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; margin:7px 0 0}
+.pk-cc{display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:0; min-height:42px; padding:2px 2px 3px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.05); line-height:1.2}
+.pk-cc small{font-size:10.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.pk-cc b{font-size:clamp(14px, 2.1cqh, 17px); font-variant-numeric:tabular-nums; white-space:nowrap}
+.pk-cc.call b{color:var(--gold2)}
+.pk-cc.free b{color:var(--green); font-size:14px}
+.pk-cc.allin b{color:#ff9b8f}
+button.pk-cc{font:inherit; color:inherit}
+.pk-cc.eq{border-style:dashed}
+.pk-cc.eq.good{border-color:rgba(92,196,137,.6)}
+.pk-cc.eq.good b{color:var(--green)}
+.pk-cc.eq.bad{border-color:rgba(255,155,143,.5)}
+.pk-cc.eq.bad b{color:#ff9b8f}
+.pk-cc.eq.off b{color:var(--faint); font-size:13px}
+.pk-dock .hint{margin:5px 0 6px}
+.pk-dock .hint small{color:var(--faint)}
+.pk-dock .actions .btn{padding:10px 6px; white-space:nowrap; min-height:48px}
+
+/* Raise panel */
+.pk-raise{display:flex; flex-direction:column; gap:6px; animation:rise .18s ease}
+.pk-rhead{display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:0 2px}
+.pk-rhead span{font-size:14px; font-weight:700}
+.pk-rhead small{font-size:11.5px; color:var(--muted); font-weight:400; margin-left:4px}
+.pk-rhead b{font-size:24px; color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1.1}
+.pk-rinfo{font-size:12.5px; color:var(--muted); padding:0 2px; line-height:1.4}
+.pk-rinfo b{color:var(--ink); font-variant-numeric:tabular-nums}
+.pk-rslide{display:flex; align-items:center; gap:8px}
+.pk-rslide input{flex:1; min-width:0; height:40px; accent-color:var(--gold)}
+.pk-step{flex:0 0 auto; width:42px; height:40px; border-radius:10px; border:1px solid var(--line2); background:rgba(255,255,255,.06); font-size:20px; font-weight:700; padding:0}
+.pk-quick{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px}
+.pk-qb{display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:44px; padding:3px 2px; border-radius:10px; border:1px solid var(--line2); background:rgba(255,255,255,.05); font-size:13px; font-weight:700; line-height:1.2}
+.pk-qb small{font-size:11px; color:var(--muted); font-weight:400}
+.pk-qb.on{border-color:var(--gold); background:rgba(230,195,106,.16)}
+.btn.pk-allok{background:linear-gradient(180deg,#d9534f,#a8322f)}
+
+/* With the raise panel open, hide the calc row (the panel shows the same numbers). On small screens also shrink my cards and the felt to make room */
+.pk-raising .pk-calc{display:none}
+@media not all and (orientation:landscape) and (min-aspect-ratio:4/3){
+  @container pk (max-height:700px){
+    .pk-raising .pk-hole .pc{--ch:clamp(56px, 9cqh, 92px)}
+    .pk-raising .pk-draw, .pk-raising .pk-log, .pk-raising .pk-info{display:none}
+    .pk-raising .pk-mystk > b{font-size:calc(var(--mf) * 1.3)}
+    .pk-raising .pk-dock .hint{margin:3px 0 4px}
+  }
+}
+
+/* ---------- Spectators (watching screens, TVs, public replays): every seat around the felt, no dock ---------- */
+.pk-opps2{padding:3px 8px 6px}
+.pk-spec .pk-table{margin:2px 8px}
+/* The board grows with the felt (a TV is drawn at about 1350×760) */
+.pk-spec .pk-table{--bgap:clamp(6px, 1.2cqw, 14px)}
+.pk-spec .pk-board{gap:var(--bgap)}
+.pk-spec .pk-table .pk-board .pc, .pk-spec .pk-table .pk-slot{--ch:min(calc((100cqw - 4 * var(--bgap)) / 5 * 1.4), 46cqh, 230px)}
+.pk-spec.pk-ended .pk-table .pk-board .pc, .pk-spec.pk-ended .pk-table .pk-slot{--ch:min(calc((100cqw - 4 * var(--bgap)) / 5 * 1.4), 26cqh, 170px)}
+/* Watching or sideways: the felt's text grows with the felt too (pk-bigfelt) */
+.pk-bigfelt .pk-info, .pk-bigfelt .pk-street{font-size:clamp(12px, 2.7cqh, 18px)}
+.pk-bigfelt .pk-pot{font-size:clamp(14px, 5cqh, 24px); padding:3px 16px}
+.pk-bigfelt .pk-pot b{font-size:clamp(18px, 8cqh, 40px)}
+.pk-bigfelt .pk-chipico{width:clamp(15px, 3.4cqh, 24px); height:clamp(15px, 3.4cqh, 24px)}
+.pk-bigfelt .pk-cur, .pk-bigfelt .pk-side{font-size:clamp(12px, 2.6cqh, 18px)}
+.pk-bigfelt .pk-runout{font-size:clamp(13px, 2.8cqh, 19px)}
+.pk-bigfelt .pk-log{--lgh:calc(clamp(11.5px, 2.5cqh, 17px) * 1.75); max-height:calc(var(--lgh) * 2 + 4px)}
+.pk-bigfelt .pk-lg{font-size:clamp(11.5px, 2.5cqh, 17px); line-height:var(--lgh)}
+.pk-bigfelt .pk-lgst{font-size:clamp(10.5px, 2.2cqh, 15px); line-height:var(--lgh)}
+@container (min-height:300px){ .pk-bigfelt .pk-log{max-height:calc(var(--lgh) * 3 + 8px)} }
+@container (max-height:200px){ .pk-bigfelt .pk-log{max-height:var(--lgh)} }
+@container (min-height:420px){
+  .pk-bigfelt .pk-prow, .pk-bigfelt .pk-show, .pk-bigfelt .pk-nosd, .pk-bigfelt .pk-bust{font-size:clamp(13px, 2.5cqh, 18px)}
+  .pk-bigfelt .pk-hn{font-size:clamp(13px, 2.6cqh, 19px)}
+  .pk-bigfelt .pk-rt{font-size:clamp(12px, 2.3cqh, 16px)}
+  .pk-bigfelt .pk-show{grid-template-columns:auto minmax(0,1fr) auto auto}
+  .pk-bigfelt .pk-show .pc.sm{--cw:clamp(34px, 5.5cqh, 52px); --ch:calc(var(--cw) * 1.4)}
+  .pk-bigfelt .pk-show .pc.sm .pc-corner{font-size:calc(var(--cw) * .32)} .pk-bigfelt .pk-show .pc.sm .pc-corner i{font-size:calc(var(--cw) * .25)}
+  .pk-bigfelt .pk-show .pc.sm .pc-mid{font-size:calc(var(--cw) * .5)}
+}
+
+/* ---------- Sideways (phones held sideways, tablets, computers, TVs) ----------
+   Playing: opponents above the felt on the left, my cards · calc · buttons in a column on the right.
+   Watching: seats in a column on each side of the felt (left column bottom-up, right column top-down = clockwise). */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .pk{display:grid; grid-template-columns:minmax(0,1fr) clamp(270px, 34%, 430px); grid-template-rows:auto minmax(0,1fr);
+    grid-template-areas:"opps dock" "table dock"}
+  .pk > .pk-opps{grid-area:opps; padding:5px 4px 3px 8px; --fs:clamp(12px, 2.1cqh, 17px)}
+  .pk > .pk-opps.c4{--fs:clamp(11.5px, 1.9cqh, 15px)}
+  .pk > .pk-table{grid-area:table; margin:2px 4px 6px 8px}
+  .pk-table .pk-board .pc, .pk-table .pk-slot{--ch:min(calc((100cqw - 28px) / 5 * 1.4), 44cqh, 220px)}
+  .pk-ended .pk-table .pk-board .pc, .pk-ended .pk-table .pk-slot{--ch:min(calc((100cqw - 28px) / 5 * 1.4), 25cqh, 150px)}
+  .pk-opps .pk-hist{display:none}
+  .pk-opps.c1 .pk-hist, .pk-opps.c2 .pk-hist, .pk-opps.c3:not(.r2) .pk-hist{display:flex}
+  @container pk (max-height:420px){ .pk-opps .pk-hist{display:none} }
+  .pc.pk-oc{--ch:clamp(46px, 13cqh, 96px)}
+  /* Heads-up: the one opponent in two short rows (name · action · cards / chips · history · cards) */
+  .pk-opps.c1.wide .seatchip.pk-seat{grid-template-columns:minmax(0,max-content) minmax(0,1fr) auto; grid-template-areas:"s1 s3 hc" "stk hist hc";
+    gap:2px 14px; padding:6px 10px; align-items:center}
+  .pk-opps.c1 .pk-hist{border-top:0; margin:0; padding:0}
+  .pk-opps.xs .seatchip.pk-seat{padding:4px 4px 5px}
+  .pk-opps.xs .pk-back{display:none}
+  .pk-opps.xs .pk-s2{flex-wrap:wrap; row-gap:1px}
+  .pk-opps.xs .pk-s1 .pk-bs{display:none}
+  .pk-opps.xs .pk-bs2{display:flex}
+  .pk-opps.xs .pk-hc:has(.pk-mini) + .pk-bs2{display:none}
+
+  /* My column */
+  .pk > .pk-dock{grid-area:dock; min-height:0; overflow-y:auto; display:flex; flex-direction:column; justify-content:center;
+    border-top:0; border-left:1px solid var(--line); padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+  .pk-dock.pk-act{box-shadow:inset 2px 0 0 var(--gold), -8px 0 24px -12px rgba(230,195,106,.5)}
+  .pk-me{gap:9px}
+  .pk .pk-hole .pc, .pk.pk-many .pk-hole .pc{--ch:clamp(64px, 25cqh, 180px)}
+  .pk.pk-ended .pk-hole .pc{--ch:clamp(60px, 22cqh, 140px)}
+  .pk.pk-raising .pk-hole .pc{--ch:clamp(48px, 15cqh, 130px)}
+  .pk-mine{--mf:clamp(12.5px, 3.6cqh, 17px)}
+  .pk-calc{gap:4px; margin-top:6px}
+  .pk-cc{min-height:clamp(40px, 7.5cqh, 60px)}
+  .pk-cc small{font-size:clamp(10px, 1.7cqh, 13px)}
+  .pk-cc b{font-size:clamp(14px, 2.7cqh, 21px)}
+  .pk-dock .hint{margin:5px 0; line-height:1.35; font-size:clamp(13px, 2.2cqh, 16px)}
+  .pk-dock .actions{gap:6px}
+  .pk-dock .actions .btn{min-height:clamp(44px, 8.5cqh, 62px); padding:8px 4px; font-size:clamp(14px, 2.5cqh, 18px)}
+  .pk-raise{gap:5px}
+  .pk-rhead span{font-size:clamp(14px, 2.4cqh, 18px)}
+  .pk-rhead b{font-size:clamp(21px, 4cqh, 30px)}
+  .pk-rinfo{font-size:clamp(12px, 2cqh, 15px); line-height:1.3}
+  .pk-rslide input, .pk-step{height:clamp(36px, 6.5cqh, 50px)}
+  .pk-qb{font-size:clamp(13px, 2.2cqh, 16px); min-height:clamp(40px, 7.5cqh, 56px)}
+  .pk-qb small{font-size:clamp(11px, 1.8cqh, 13px)}
+  .pk-raising .pk-draw{display:none}
+  @container pk (max-height:420px){
+    .pk-raising .pk-mysub, .pk-raising .pk-made{display:none}
+    .pk-raising .pk-dock .hint{margin:2px 0}
+    .pk-raise .pk-rslide input, .pk-raise .pk-step{height:36px}
+    .pk-raise .pk-qb{min-height:40px}
+  }
+  .pk-nohole{width:auto; padding:0 6px}
+
+  /* Watching: seats left and right of the felt */
+  .pk.pk-spec{grid-template-columns:clamp(180px, 25%, 340px) minmax(0,1fr) clamp(180px, 25%, 340px); grid-template-rows:minmax(0,1fr);
+    grid-template-areas:"opps table opps2"}
+  .pk-spec > .pk-opps2{grid-area:opps2}
+  .pk-spec > .pk-table{margin:6px 2px}
+  .pk-opps.col{display:flex; flex-direction:column; justify-content:center; gap:6px; min-height:0; padding:6px 4px 6px 8px; container:pkcol / size;
+    --fs:clamp(12px, min(calc(100cqh / var(--k, 4) * .155), 5.4cqw), 19px)}
+  .pk-opps.col.right{padding:6px 8px 6px 4px}
+  .pk-opps.col .seatchip.pk-seat{flex:0 1 auto; min-height:0; gap:1px 8px; padding:5px 8px}
+  .pk-opps.col .pc.pk-oc{--ch:clamp(30px, min(calc(100cqh / var(--k, 4) - 24px), 27cqw), 130px)}
+  .pk-opps.col.right .seatchip.pk-seat{grid-template-columns:auto minmax(0,1fr); grid-template-areas:"hc s1" "hc stk" "hc s3" "hc hist"}
+  .pk-opps.col .pk-hist{display:flex}
+  .pk-opps.col .pk-hc{align-self:center}
+  .pk-opps.col .pk-seat .av.sm{display:inline-grid}
+  .pk-opps.dense{align-content:center; padding:6px 4px 6px 8px}
+  .pk-opps.dense .pk-s2{flex-wrap:wrap; row-gap:1px}
+  .pk-opps2.dense{padding:6px 8px 6px 4px}
+  @container pkcol (max-height:420px){ .pk-opps.col.k4 .pk-hist{display:none} }
+  @container pkcol (max-height:320px){ .pk-opps.col.k3 .pk-hist{display:none} }
+}

@@ -1,0 +1,389 @@
+/* Dalmuti — the original card look (colour band · number · name · emblem) adapted to the room's green theme */
+.dm{height:100%; display:flex; flex-direction:column}
+
+/* ---------- Name-chip grid ---------- */
+.dm-seats{display:grid; grid-template-columns:repeat(var(--cols,4),minmax(0,1fr)); gap:4px; padding:6px 6px 2px; flex:0 0 auto}
+.dm-seat{min-width:0; padding:3px 5px 2px 5px; border-radius:9px; background:rgba(0,0,0,.32); border:1px solid var(--line);
+  border-left:3px solid var(--tc,#a39784); font-size:11px; line-height:1.25; position:relative}
+.dm-seat .l1{display:flex; align-items:center; gap:3px; min-width:0}
+.dm-seat .nm{flex:1; min-width:0; font-weight:700; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.dm-seat .cnt{flex:0 0 auto; font-weight:800; font-size:11.5px; color:#fff; background:rgba(255,255,255,.13); border-radius:6px; padding:0 5px; font-variant-numeric:tabular-nums}
+.dm-seat .l2{display:flex; justify-content:space-between; gap:4px; color:var(--muted); font-size:10.5px; white-space:nowrap}
+.dm-seat .l2 .ti{color:var(--tc); display:inline-flex; align-items:center; gap:2px; min-width:0; overflow:hidden}
+.dm-seat .l2 .tn{min-width:0; overflow:hidden; text-overflow:ellipsis}
+.dm-seat .l2 .dm-tag{margin-left:2px}
+.dm-seat .l2 .sc{flex:0 0 auto}
+.dm-seat .l2 .sc{color:var(--gold2); font-variant-numeric:tabular-nums}
+.dm-seat .l3{height:17px; display:flex; align-items:center; overflow:hidden; white-space:nowrap}
+.dm-seat.me .nm{color:var(--green)}
+.dm-seat.turn{border-color:var(--gold); border-left-color:var(--tc); box-shadow:0 0 0 1px var(--gold), 0 0 14px rgba(230,195,106,.35)}
+.dm-seat.out{opacity:.55}
+.dm-seat.hot{animation:dmHot .7s ease}
+/* a pass: a short grey nod, clearly different from the gold flash of a play */
+.dm-seat.hotpass{animation:dmNod .55s ease}
+@keyframes dmNod{0%{background:rgba(255,255,255,.16)} 30%{transform:translateY(2px)} 100%{background:rgba(0,0,0,.32); transform:none}}
+/* pass lock: players who passed sit out the rest of the trick */
+.dm-seat.sat{opacity:.5; filter:grayscale(.6)}
+.dm-lockrule{display:inline-block; margin-left:6px; padding:0 6px; border-radius:6px; font-size:11px; color:var(--muted); border:1px solid var(--line2)}
+.dm-passfx{position:absolute; left:50%; top:46%; z-index:5; display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:999px; pointer-events:none;
+  background:rgba(20,22,24,.86); border:1px dashed rgba(255,255,255,.35); color:#d9dde0; font-size:15px; white-space:nowrap; transform:translate(-50%,-50%)}
+.dm-passfx b{color:#fff}
+.dm-passfx .ico{font-size:18px}
+.dm-passfx small{font-size:11.5px; color:var(--muted)}
+.dm-passfx.go{animation:dmPassFx 1.3s ease forwards}
+@keyframes dmPassFx{0%{opacity:0; transform:translate(-30%,-50%)} 15%{opacity:1; transform:translate(-50%,-50%)} 75%{opacity:1; transform:translate(-50%,-50%)} 100%{opacity:0; transform:translate(-70%,-50%)}}
+@keyframes dmHot{0%{background:rgba(245,220,148,.35)}100%{background:rgba(0,0,0,.32)}}
+.dm-tag{flex:0 0 auto; font-size:9px; padding:0 3px; border-radius:4px; border:1px solid var(--line2); color:var(--muted)}
+.dm-tag.away{color:#ff9b8f; border-color:rgba(255,155,143,.5)}
+.dm-tag.rev{color:#ffb0c0; border-color:rgba(255,120,150,.6)}
+.dm-passed{font-size:10.5px; color:var(--muted); border:1px dashed var(--line2); border-radius:4px; padding:0 5px; font-style:italic}
+.dm-place{font-size:10.5px; font-weight:800; color:var(--gold2)}
+.dm-think{font-size:10.5px; color:var(--gold2)}
+.dm-think b{display:inline-block; animation:blink 1.2s ease-in-out infinite}
+.dm-taxm{font-size:10.5px; color:#f0c6a8}
+.dm-drew{font-size:10.5px; color:var(--muted); display:inline-flex; align-items:center; gap:3px}
+.dm-crest{width:16px; height:16px; border-radius:50%; background:var(--tc,#a39784); color:#1a1215; display:inline-grid; place-items:center; flex:0 0 auto; vertical-align:middle}
+.dm-crest svg{width:11px; height:11px}
+
+/* Small card pips (this trick's record · name chips) */
+.dm-pips{display:inline-flex; align-items:center; gap:1px}
+.dm-pip{width:12px; height:16px; border-radius:2px; background:var(--rc); color:#fff; font-size:9px; font-weight:800; font-style:normal;
+  display:inline-grid; place-items:center; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); flex:0 0 auto}
+.dm-pip.more{background:none; box-shadow:none; color:var(--muted); width:auto; padding:0 1px}
+
+/* ---------- Table ---------- */
+.dm-table{flex:1; min-height:0; margin:4px 6px; border-radius:18px; position:relative; overflow:hidden; padding:5px 8px 6px;
+  display:flex; flex-direction:column; align-items:center;
+  box-shadow:inset 0 0 0 2px rgba(230,195,106,.22), inset 0 10px 40px rgba(0,0,0,.4)}
+.dm-call{flex:0 0 auto; font-size:12.5px; color:#e8f0e8; min-height:18px; text-align:center; line-height:1.4; max-width:100%;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.dm-call b{color:var(--gold2)}
+.dm-callc{display:inline-flex; vertical-align:middle}
+.dm-center{flex:1; min-height:0; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; justify-content:safe center; gap:5px; overflow-y:auto; scrollbar-width:none}
+.dm-trick{position:relative; flex:0 0 auto; height:calc(var(--cw,64px) * 1.42); width:var(--cw,64px)}
+.dm-trick .slot{position:absolute; top:0; left:calc(var(--i) * var(--step,20px)); transform:rotate(var(--rot,0deg))}
+.dm-trick.land .slot{animation:dmLand .28s ease both; animation-delay:calc(var(--i) * 30ms)}
+.dm-trick.prev{opacity:.42; filter:saturate(.4)}
+.dm-trick.prev .slot{animation:none}
+.dm-trick.empty{display:grid; place-items:center; width:auto !important; padding:0 22px; --cw:56px; border:2px dashed rgba(255,255,255,.16); border-radius:12px; color:rgba(255,255,255,.35); font-size:13px}
+@keyframes dmLand{from{transform:translateY(-26px) rotate(0deg) scale(1.08); opacity:0}}
+.dm-who{font-size:13px; text-align:center; color:#f4f1e6; display:flex; align-items:center; gap:5px; justify-content:center; flex-wrap:wrap}
+.dm-who b{color:var(--gold2)}
+.dm-need{font-size:12.5px; text-align:center; color:rgba(241,237,226,.82); line-height:1.45}
+.dm-need b{color:#fff}
+.dm-sub{font-size:12px; color:rgba(241,237,226,.7); letter-spacing:.04em; text-align:center}
+.dm-big{font-size:20px; font-weight:800; color:var(--gold2); text-align:center}
+.dm-big.dim{color:rgba(241,237,226,.55); font-size:16px; font-weight:700}
+.dm-log{flex:0 0 auto; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:3px 4px; max-width:100%; font-size:11px}
+.dm-log:empty{display:none}
+.dm-log .lab{color:rgba(241,237,226,.55); font-size:10.5px}
+.dm-log .lab.cut::after{content:" …"}
+.dm-log .ent{display:inline-flex; align-items:center; gap:3px; background:rgba(0,0,0,.28); border-radius:6px; padding:1px 5px}
+.dm-log .ent b{font-weight:600; max-width:52px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.dm-log .ent.me b{color:var(--green)}
+.dm-log .ps{font-style:italic; color:var(--muted)}
+
+/* Seat draw */
+.dm-draws{display:flex; flex-wrap:wrap; justify-content:center; gap:8px 6px; max-width:100%}
+.dm-dr{display:flex; flex-direction:column; align-items:center; gap:2px; width:calc(var(--cw) + 4px); animation:dmLand .35s ease both; animation-delay:calc(var(--i) * 90ms)}
+.dm-dr b{font-size:11px; font-weight:600; max-width:calc(var(--cw) + 6px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.dm-dr.win .dm-card{box-shadow:0 0 0 2px var(--gold2), 0 0 18px rgba(245,220,148,.6)}
+.dm-dr.win b{color:var(--gold2)}
+
+/* Tax */
+.dm-tx{width:100%; max-width:380px; padding:6px 8px; border-radius:10px; background:rgba(0,0,0,.25); border:1px solid var(--line)}
+.dm-tx.now{border-color:var(--gold)}
+.dm-tx .row{display:flex; align-items:center; gap:4px; font-size:13px; flex-wrap:wrap; margin-top:0; justify-content:flex-start}  /* not the shared button .row */
+.dm-tx .row b{max-width:76px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.dm-tx .arr{color:var(--gold2); font-size:12px; margin:0 2px}
+.dm-tx .st{margin-left:auto; font-size:11px; color:var(--muted)}
+.dm-txc{display:flex; align-items:center; gap:4px; margin-top:4px; flex-wrap:wrap; font-size:11px; color:var(--muted)}
+.dm-txc span{margin-left:4px}
+
+/* Round results */
+.dm-center.stand{justify-content:center; justify-content:safe center; padding-top:2px}
+.dm-stand{list-style:none; margin:0; padding:0; width:100%; max-width:400px}
+.dm-stand li{display:grid; grid-template-columns:22px minmax(0,1fr) auto 30px 32px; align-items:center; gap:6px; padding:3px 4px; border-bottom:1px solid rgba(255,255,255,.08); font-size:13px}
+.dm-stand li.hd{font-size:10.5px; color:rgba(241,237,226,.55); border:0; padding-bottom:0}
+.dm-stand li.me{background:rgba(230,195,106,.12); border-radius:6px}
+.dm-stand b{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.dm-stand .nt{display:inline-flex; align-items:center; gap:3px; font-size:12px; font-weight:700; white-space:nowrap}
+.dm-stand .pt{color:var(--green); font-weight:800; text-align:right}
+.dm-stand .tot{color:var(--gold2); font-weight:800; text-align:right}
+.dm-stand .md{width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:800; border:1px solid var(--line2)}
+.dm-stand .md.m1{background:linear-gradient(180deg,#f3d48a,#b98a2f); color:#2a1c06}
+.dm-stand .md.m2{background:linear-gradient(180deg,#e4e8ee,#9aa3ae); color:#1e2329}
+.dm-stand .md.m3{background:linear-gradient(180deg,#e2a77a,#9a5c33); color:#2a1407}
+
+.dm .dm-stand.tight li{padding:1px 4px; font-size:12.5px}
+.dm .dm-stand.tight .md{width:18px; height:18px; font-size:10.5px}
+.dm .dm-stand.tighter li{padding:0 4px; font-size:12px; line-height:1.3}
+.dm .dm-stand.tighter li.hd{display:none}
+
+/* Revolution banner */
+.dm-banner{position:absolute; inset:0; z-index:5; display:grid; place-items:center; text-align:center; background:rgba(40,8,20,.82); animation:fade .25s}
+.dm-banner > div{display:flex; flex-direction:column; gap:4px; padding:12px; animation:dmBan .5s cubic-bezier(.2,.9,.3,1.3)}
+.dm-banner small{letter-spacing:.2em; color:#f08a9c; font-size:11px; font-weight:800}
+.dm-banner b{font-size:38px; color:var(--gold2); text-shadow:0 4px 24px rgba(240,180,90,.6)}
+.dm-banner span{font-size:13.5px; color:#f4e7e9}
+.dm-banner.great{background:radial-gradient(circle, rgba(120,10,40,.92), rgba(30,4,12,.92))}
+.dm-banner.en b{font-size:32px; line-height:1.1}
+@keyframes dmBan{from{transform:scale(.6); opacity:0}}
+
+/* ---------- Cards ---------- */
+.dm-card{--cw:56px; width:var(--cw); height:calc(var(--cw) * 1.42); border-radius:calc(var(--cw) * .1); position:relative; overflow:hidden; flex:0 0 auto;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; color:var(--rc);
+  background:radial-gradient(circle at 30% 18%, rgba(255,255,255,.7), rgba(255,255,255,0) 55%), linear-gradient(180deg,#fbf6ea,#eee4cd);
+  border:1px solid #cdbf9f; box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 3px 8px rgba(0,0,0,.45);
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+.dm-trick .dm-card, .dm-hand .dm-card, .dm-mcards .dm-card, .dm-draws .dm-card{--cw:inherit}
+.dm-card .band{position:absolute; left:0; right:0; top:0; height:calc(var(--cw) * .11); background:var(--rc)}
+.dm-card .cn{position:absolute; top:calc(var(--cw) * .15); left:calc(var(--cw) * .08); font-size:calc(var(--cw) * .2); font-weight:800; line-height:1}
+.dm-card .gl{width:calc(var(--cw) * .3); height:calc(var(--cw) * .3); margin-top:calc(var(--cw) * .14); opacity:.8}
+.dm-card .rk{font-family:Georgia,"Times New Roman",serif; font-size:calc(var(--cw) * .44); font-weight:700; line-height:1}
+.dm-card .tt{font-size:max(8px, calc(var(--cw) * .155)); line-height:1.15; margin-top:1px; white-space:nowrap; font-weight:700; letter-spacing:-.02em}
+.dm-card.jk{background:radial-gradient(circle at 30% 18%, rgba(255,255,255,.6), rgba(255,255,255,0) 55%), linear-gradient(180deg,#fbeef0,#efd9dd); border-color:#c9a1ab}
+.dm-card.jk .rk{font-family:inherit; font-size:calc(var(--cw) * .26); font-weight:800}
+/* English: longer names get a slightly smaller face so they stay inside the card */
+.dm-card .tt.lg{font-size:max(7px, calc(var(--cw) * .135)); letter-spacing:-.04em}
+.dm-card.en.jk .rk{font-size:calc(var(--cw) * .2)}
+.dm-card.mini{--cw:34px !important}
+.dm-card.mini .tt, .dm-card.mini .gl, .dm-card.mini .cn{display:none}
+.dm-card.mini .rk{font-size:15px}
+.dm-card.mini.jk .rk{font-size:10px}
+.dm-card.mini.en.jk .rk{font-size:8px; letter-spacing:-.03em}
+.dm-hand.xs .dm-card .tt, .dm-hand.xs .dm-card .cn{display:none}
+.dm-hand.xs .dm-card .gl{margin-top:2px}
+
+/* ---------- Bottom: my line · hand · buttons ---------- */
+.dm-dock{padding-top:5px}
+.dm-me{display:flex; align-items:center; gap:7px; width:100%; padding:0 2px; border:0; background:none; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; min-height:22px; text-align:left}
+.dm-me .ti{font-size:13.5px}
+.dm-me .it b{color:var(--ink)}
+.dm-me .more{margin-left:auto; color:var(--gold2); font-size:11px}
+.dm-dock .hint{margin:2px 0 2px; min-height:1.45em; line-height:1.45; font-size:12.5px}
+.hint.dm-warn{color:#ffb4a8}
+.hint.dm-urge{color:var(--gold2)}
+.dm-hand{display:grid; grid-template-columns:repeat(var(--cols,7), var(--cw,52px)); justify-content:center; align-content:end; gap:8px 5px; --cw:52px; overflow:visible}
+.dm-grp{position:relative; padding:0; border:0; background:none; width:var(--cw); height:calc(var(--cw) * 1.42); transition:transform .12s; -webkit-tap-highlight-color:transparent}
+.dm-grp.s2 .dm-card{box-shadow:2px -2px 0 -1px #e7dcc2, 2px -2px 0 0 rgba(0,0,0,.35), 0 3px 8px rgba(0,0,0,.45)}
+.dm-grp.s3 .dm-card{box-shadow:2px -2px 0 -1px #e7dcc2, 2px -2px 0 0 rgba(0,0,0,.35), 4px -4px 0 -1px #dfd2b5, 4px -4px 0 0 rgba(0,0,0,.35), 0 3px 8px rgba(0,0,0,.45)}
+.dm-grp .dm-card{overflow:hidden}
+.dm-grp .n{position:absolute; top:-7px; right:-6px; z-index:2; min-width:19px; height:19px; padding:0 4px; border-radius:10px; background:var(--bg2); border:1px solid var(--gold);
+  color:var(--gold2); font-size:11.5px; font-weight:800; display:grid; place-items:center; font-variant-numeric:tabular-nums}
+.dm-grp.can .dm-card{outline:2px solid rgba(92,196,137,.9); outline-offset:0}
+.dm-grp.dim .dm-card{filter:brightness(.48) saturate(.5)}
+.dm-grp .why{position:absolute; left:50%; bottom:3px; transform:translateX(-50%); z-index:2; white-space:nowrap; font-size:10.5px; font-weight:800; color:#ffd6cc; background:rgba(20,8,8,.82); border-radius:6px; padding:0 5px; line-height:1.5}
+.dm-grp.sel{transform:translateY(-7px)}
+.dm-grp.sel .dm-card{outline:3px solid var(--gold2); box-shadow:0 0 14px rgba(245,220,148,.65), 0 6px 12px rgba(0,0,0,.5)}
+.dm-grp .pk{position:absolute; left:50%; bottom:-6px; transform:translateX(-50%); z-index:2; background:var(--gold); color:#2a1c06; font-size:10.5px; font-weight:800; padding:0 6px; border-radius:7px; white-space:nowrap}
+.dm-grp.in{animation:dmIn .42s ease both; animation-delay:calc(var(--i) * 45ms)}
+@keyframes dmIn{from{transform:translateY(30px) scale(.8); opacity:0}}
+.dm-hand.empty{grid-template-columns:1fr}
+.dm-empty{grid-column:1 / -1; text-align:center; color:var(--gold2); font-weight:700; align-self:center; padding:10px 0}
+.dm-acts{display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1.25fr); gap:6px; align-items:center; margin-top:6px}
+.dm-acts .btn{min-height:44px; padding:8px 10px}
+.dm-urgebtn{background:linear-gradient(180deg,#dcb562,#a17a2e) !important; color:#1d1408 !important; border-color:#f0d38c !important; animation:dmNudge 1.4s ease-in-out infinite}
+@keyframes dmNudge{0%,100%{box-shadow:0 0 0 0 rgba(240,211,140,.5)} 50%{box-shadow:0 0 0 7px rgba(240,211,140,0)}}
+.dm-sel{display:flex; align-items:center; justify-content:center; gap:4px; min-width:92px}
+.dm-sel .st{width:34px; height:40px; border-radius:9px; border:1px solid var(--line2); background:rgba(255,255,255,.07); font-size:19px; font-weight:800; padding:0; line-height:1}
+.dm-sel .st:disabled{opacity:.3}
+.dm-sel .cur{display:inline-flex; align-items:center; gap:2px; font-weight:800; font-size:13px; white-space:nowrap}
+.dm-sel .none{font-size:11px; color:var(--faint); text-align:center; line-height:1.2}
+
+/* ---------- Dialogs ---------- */
+.dm-mnote{font-size:13.5px; color:var(--muted); padding:10px 12px; border-radius:10px; background:rgba(0,0,0,.25); border:1px solid var(--line)}
+.dm-mnote b{color:var(--ink)}
+.dm-mcards{display:flex; gap:8px; justify-content:center; margin-top:10px; --cw:58px}
+.dm-recv{display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted); margin-bottom:8px}
+.dm-recv span{margin-right:4px}
+.dm-rgrid{display:grid; grid-template-columns:repeat(auto-fill, minmax(46px,1fr)); gap:8px 6px; padding:6px 2px}
+.dm-rc{position:relative; padding:0; border:0; background:none; display:grid; place-items:center; min-height:52px}
+.dm-rc .dm-card.mini{--cw:38px !important}
+.dm-rc .dm-card.mini .rk{font-size:17px}
+.dm-rc .n{position:absolute; top:-5px; right:2px; min-width:17px; height:17px; border-radius:9px; background:var(--bg2); border:1px solid var(--gold); color:var(--gold2); font-size:10.5px; font-weight:800; display:grid; place-items:center}
+.dm-rc:disabled{opacity:.35}
+.dm-picked{display:flex; align-items:center; gap:6px; flex-wrap:wrap; min-height:62px; padding:8px; margin-top:4px; border-radius:10px; border:1px dashed rgba(230,195,106,.5); background:rgba(0,0,0,.2); font-size:12.5px; color:var(--muted)}
+.dm-pc{padding:0; border:0; background:none}
+.dm-pc .dm-card.mini{--cw:38px !important; box-shadow:0 0 0 2px var(--gold2)}
+.dm-scorewrap{overflow-x:auto; margin:4px -4px 0}
+.dm-score{border-collapse:collapse; width:100%; font-size:12.5px}
+.dm-score th{font-size:11px; color:var(--muted); font-weight:600; padding:3px 4px; text-align:center}
+.dm-score td{padding:5px 4px; text-align:center; border-top:1px solid var(--line); font-weight:700; font-variant-numeric:tabular-nums}
+.dm-score td small{display:block; font-size:9.5px; font-weight:600; opacity:.85}
+.dm-score td.nm{text-align:left; white-space:nowrap}
+.dm-score td.nm span{display:inline-flex; align-items:center; gap:4px}
+.dm-score td.tot{color:var(--gold2); font-size:14px}
+.dm-score tr.me td{background:rgba(230,195,106,.09)}
+
+/* Small / tall screens */
+.dm.short .dm-seat .l3{height:15px}
+.dm.short .dm-need{font-size:12px}
+.dm.tall .dm-seat{padding:4px 6px 3px}
+.dm.tall .dm-seat .nm{font-size:13px}
+.dm.tall .dm-call{font-size:13.5px}
+.dm.tall .dm-need, .dm.tall .dm-who{font-size:14px}
+
+/* ---------- Flying cards (ui.js flights → ctx.fly) ---------- */
+.dm-flyc{display:grid; place-items:center}
+.dm-flyc > .dm-card{transform:rotate(var(--rot,0deg))}
+.dm-anchor{position:absolute; left:50%; top:50%; width:34px; height:48px; transform:translate(-50%,-50%); opacity:0; pointer-events:none}
+.dm-back{display:block; width:34px; height:48px; border-radius:4px; background:var(--bk); border:2px solid var(--bk-edge);
+  box-shadow:inset 0 0 0 2px var(--bk-in), 0 3px 8px rgba(0,0,0,.45)}
+
+/* ---------- Spectators (me = -1): no dock — the table takes the freed space ---------- */
+.dm.spec .dm-dock{display:none}
+.dm.spec .dm-table{margin-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.dm.spec .dm-seat .nm{font-size:13px}
+.dm.spec .dm-call{font-size:14px}
+.dm.spec .dm-who, .dm.spec .dm-need{font-size:14px}
+.dm.spec .dm-log{font-size:12.5px}
+.dm.spec .dm-log .ent b{max-width:76px}
+/* Replays: nothing to press */
+.dm.rp .dm-acts{display:none}
+/* Full title names replace the short ones where there is room (big landscape screens) */
+.dm-seat .tf{display:none}
+
+/* ---------- Landscape: name chips in a column · table · my line, hand and buttons in a column ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .dm{display:grid; grid-template-columns:auto minmax(0,1fr) minmax(250px,36%); grid-template-rows:minmax(0,1fr)}
+  .dm.spec{grid-template-columns:auto minmax(0,1fr)}
+  .dm.nohand:not(.spec){grid-template-columns:auto minmax(0,1fr) minmax(210px,26%)}
+  .dm-seats{grid-row:1; grid-column:1; width:150px; grid-template-columns:repeat(var(--scols,1),minmax(0,1fr)); align-content:center;
+    overflow-y:auto; overflow-x:hidden; scrollbar-width:none; padding:6px 0 6px 6px; gap:4px}
+  .dm-seats.two{width:262px}
+  .dm-table{grid-row:1; grid-column:2; margin:6px; min-width:0}
+  .dm.spec .dm-table{margin-bottom:6px}
+  .dm-dock{grid-row:1; grid-column:3; min-width:0; min-height:0; display:flex; flex-direction:column; border-top:0; border-left:1px solid var(--line);
+    padding:6px 8px calc(8px + env(safe-area-inset-bottom,0px)); background:linear-gradient(90deg,rgba(0,0,0,.22),rgba(0,0,0,.45))}
+  .dm-me{gap:5px}
+  .dm-me .rd{display:none}
+  .dm-me .ti{min-width:0; overflow:hidden; text-overflow:ellipsis}
+  .dm-me .it, .dm-me .more{flex:0 0 auto}
+  .dm-dock .hint{margin:3px 0 0; line-height:1.35}
+  .dm-hand{flex:1 1 0; min-height:0; align-content:center; padding-top:6px}
+  .dm-acts{margin-top:4px}
+  .dm-sel{min-width:0}
+  .dm-sel .st{width:30px}
+  /* Compact two-line chips when a column of full chips doesn't fit (many players on a phone held sideways) */
+  .dm-seats.cmp .dm-seat{display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:4px; padding:2px 5px 1px}
+  .dm-seats.cmp .dm-seat .l1{grid-column:1 / -1}
+  .dm-seats.cmp .dm-seat .l3{grid-column:1; grid-row:2; height:15px}
+  .dm-seats.cmp .dm-seat .l2{grid-column:2; grid-row:2; align-items:center}
+  .dm-seats.cmp .dm-seat .l2 .ti{display:none}
+  .dm-seats.cmp .dm-crest{width:14px; height:14px}
+  .dm-seats.cmp .dm-crest svg{width:10px; height:10px}
+  /* Big screens (computers, TVs): larger chips and text */
+  .dm.big .dm-seats{width:196px; gap:6px; padding:8px 0 8px 8px}
+  .dm.big .dm-seats.two{width:340px}
+  .dm.big .dm-seat{font-size:12.5px; padding:5px 8px 4px; border-radius:11px; line-height:1.3}
+  .dm.big .dm-seat .nm{font-size:15px}
+  .dm.big .dm-seat .cnt{font-size:14px; padding:0 6px}
+  .dm.big .dm-seat .l2{font-size:12.5px}
+  .dm.big .dm-seat .l3{height:20px}
+  .dm.big .dm-seat .tn{display:none}
+  .dm.big .dm-seat .tf{display:inline; min-width:0; overflow:hidden; text-overflow:ellipsis}
+  .dm.big .dm-crest{width:20px; height:20px}
+  .dm.big .dm-crest svg{width:13px; height:13px}
+  .dm.big .dm-pip{width:14px; height:19px; font-size:10.5px}
+  .dm.big .dm-passed, .dm.big .dm-place, .dm.big .dm-think, .dm.big .dm-taxm, .dm.big .dm-drew{font-size:12.5px}
+  .dm.big .dm-call{font-size:15px; min-height:22px}
+  .dm.big .dm-who, .dm.big .dm-need{font-size:15px}
+  .dm.big .dm-sub{font-size:13.5px}
+  .dm.big .dm-log{font-size:12.5px; gap:4px 6px}
+  .dm.big .dm-stand{max-width:520px}
+  .dm.big .dm-stand li{font-size:15px; grid-template-columns:26px minmax(0,1fr) auto 36px 40px; padding:5px 6px}
+  .dm.big .dm-stand .md{width:24px; height:24px; font-size:12.5px}
+  .dm.big .dm-tx{max-width:520px}
+  .dm.big .dm-tx .row{font-size:15px}
+  .dm.big .dm-tx .row b{max-width:140px}
+  .dm.big .dm-me{font-size:13px}
+  .dm.big .dm-dock .hint{font-size:13.5px}
+  /* Watching on a TV: the table is the show */
+  .dm.spec.big .dm-seats{width:236px}
+  .dm.spec.big .dm-seat .nm{font-size:17px}
+  .dm.spec.big .dm-seat .cnt{font-size:16px}
+  .dm.spec.big .dm-seat .l2{font-size:13.5px}
+  .dm.spec.big .dm-seat .l3{height:22px}
+  .dm.spec.big .dm-call{font-size:18px; min-height:26px}
+  .dm.spec.big .dm-who, .dm.spec.big .dm-need{font-size:18px}
+  .dm.spec.big .dm-big{font-size:28px}
+  .dm.spec.big .dm-log{font-size:14px}
+  .dm.spec.big .dm-log .ent b{max-width:110px}
+  .dm.spec.big .dm-log .dm-pip{width:15px; height:20px; font-size:11px}
+  .dm.spec.big .dm-passfx{font-size:20px; padding:10px 20px}
+  .dm.spec.big .dm-banner b{font-size:56px}
+  .dm.spec.big .dm-banner span{font-size:18px}
+  .dm.spec.big .dm-sub{font-size:16px}
+  .dm.spec.big .dm-tx{max-width:680px; padding:10px 16px}
+  .dm.spec.big .dm-tx .row{font-size:20px; gap:8px}
+  .dm.spec.big .dm-tx .row b{max-width:200px}
+  .dm.spec.big .dm-tx .arr{font-size:17px}
+  .dm.spec.big .dm-tx .st{font-size:15px}
+  .dm.spec.big .dm-tx .dm-crest, .dm.spec.big .dm-stand .dm-crest{width:24px; height:24px}
+  .dm.spec.big .dm-tx .dm-crest svg, .dm.spec.big .dm-stand .dm-crest svg{width:16px; height:16px}
+  .dm.spec.big .dm-stand{max-width:680px}
+  .dm.spec.big .dm-stand li{font-size:19px; grid-template-columns:32px minmax(0,1fr) auto 44px 48px; padding:6px 8px}
+  .dm.spec.big .dm-stand li.hd{font-size:13px}
+  .dm.spec.big .dm-stand .nt{font-size:17px}
+  .dm.spec.big .dm-stand .md{width:28px; height:28px; font-size:14px}
+  .dm.spec.big .dm-dr b{font-size:15px}
+}
+
+/* Dialogs on a phone held sideways: a wider, two-column box so nothing has to scroll */
+@media (orientation:landscape) and (min-aspect-ratio:4/3) and (max-height:520px){
+  .modal.dm-modal{max-width:660px; padding:12px 16px 10px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:12px; align-content:start}
+  .modal.dm-modal > *{grid-column:1 / -1}
+  .modal.dm-modal > .eyebrow{grid-row:1; margin-bottom:0}
+  .modal.dm-modal > h2{grid-row:2; margin:0 0 4px; font-size:18px}
+  .modal.dm-modal > p{margin:0 0 8px; font-size:13px; line-height:1.4}
+  .modal.dm-modal > h2 + p{grid-row:3}
+  .modal.dm-modal > .row{grid-row:6}
+  .modal.dm-modal .dm-recv{grid-column:1; grid-row:4; margin:0; flex-wrap:wrap}
+  .modal.dm-modal .dm-picked{grid-column:2; grid-row:4; margin:0; min-height:54px; padding:4px 8px}
+  .modal.dm-modal .dm-rgrid{grid-row:5; display:flex; gap:4px; padding:6px 2px 4px}
+  .modal.dm-modal .dm-rc{flex:1 1 0; min-width:0; min-height:50px}
+  .modal.dm-modal .dm-mnote{grid-row:4; display:flex; align-items:center; gap:12px; padding:8px 12px; font-size:13px; margin-bottom:8px}
+  .modal.dm-modal .dm-mcards{margin:0; --cw:46px; flex:0 0 auto}
+  .modal.dm-modal .dm-scorewrap{grid-row:4}
+  .modal.dm-modal .dm-score td{padding:2px 4px}
+  .modal.dm-modal .dm-score td small{display:inline; margin-left:2px}
+  .modal.dm-scores > .row{display:none}            /* the ✕ and a tap outside close it */
+}
+
+/* ---------- Card face designs (cards.js adds dd-<design>; chosen in the settings) ---------- */
+/* Royal: a dark plate in the card's colour with a gold frame, gold crest and numerals */
+.dm-card.dd-royal{color:#f3d58a; border:1.5px solid #c9a24a;
+  background:radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--rc) 85%, #fff 15%), color-mix(in srgb, var(--rc) 55%, #000) 75%);
+  box-shadow:inset 0 0 0 calc(var(--cw) * .04) color-mix(in srgb, var(--rc) 55%, #000), inset 0 0 0 calc(var(--cw) * .055) #c9a24a, 0 3px 8px rgba(0,0,0,.5)}
+.dm-card.dd-royal .band{display:none}
+.dm-card.dd-royal .gl{opacity:1; filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.dm-card.dd-royal .rk{text-shadow:0 2px 3px rgba(0,0,0,.45)}
+.dm-card.dd-royal .tt{color:#fbeac0}
+.dm-card.dd-royal.jk{background:radial-gradient(circle at 50% 28%, #c2185b, #3a0618 75%)}
+/* Big number: the number fills the card; name and crest step aside */
+.dm-card.dd-number{background:#fdfaf2; border:1px solid #d8cdb2}
+.dm-card.dd-number .band{top:auto; bottom:0; height:calc(var(--cw) * .16)}
+.dm-card.dd-number .gl{position:absolute; top:calc(var(--cw) * .1); right:calc(var(--cw) * .08); margin:0; width:calc(var(--cw) * .22); height:calc(var(--cw) * .22)}
+.dm-card.dd-number .rk{font-family:system-ui,sans-serif; font-size:calc(var(--cw) * .82); font-weight:900; letter-spacing:-.06em; margin-top:calc(var(--cw) * -.1)}
+.dm-card.dd-number .tt{position:absolute; bottom:calc(var(--cw) * .2); left:0; right:0; text-align:center; font-size:max(7px, calc(var(--cw) * .13)); opacity:.85}
+.dm-card.dd-number.jk .rk{font-size:calc(var(--cw) * .3)}
+.dm-card.dd-number .cn{display:none}
+/* Minimal: flat colour, white symbols */
+.dm-card.dd-minimal{background:var(--rc); color:#fff; border:none; box-shadow:0 3px 8px rgba(0,0,0,.45)}
+.dm-card.dd-minimal .band{display:none}
+.dm-card.dd-minimal .gl{width:calc(var(--cw) * .44); height:calc(var(--cw) * .44); margin-top:calc(var(--cw) * .1); opacity:.95}
+.dm-card.dd-minimal .rk{font-family:system-ui,sans-serif; font-weight:900; font-size:calc(var(--cw) * .4)}
+.dm-card.dd-minimal .tt{opacity:.9}
+.dm-card.dd-minimal .cn{opacity:.75}
+/* Parchment: old paper, brown ink, a hand-drawn dashed border and an italic name */
+.dm-card.dd-parchment{color:#3b2a17; border:1.5px dashed #8a6a3c;
+  background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 50%),
+    radial-gradient(circle at 70% 85%, rgba(120,80,30,.18), transparent 55%), linear-gradient(180deg,#efe2c2,#dcc79c)}
+.dm-card.dd-parchment .band{height:calc(var(--cw) * .05); opacity:.7}
+.dm-card.dd-parchment .gl{color:var(--rc); opacity:1}
+.dm-card.dd-parchment .rk{font-family:Georgia,"Times New Roman",serif; font-style:italic}
+.dm-card.dd-parchment .tt{font-family:Georgia,"Times New Roman",serif; font-style:italic; font-weight:600}
+/* small cards (trick record, my tax line) keep their compact layout in every design */
+.dm-card.mini.dd-number .rk{font-size:15px; margin:0}
+.dm-card.mini.dd-minimal .rk, .dm-card.mini.dd-royal .rk{font-size:15px}

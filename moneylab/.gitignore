@@ -1,0 +1,16 @@
+# Personal financial data never leaves this PC.
+data/
+*.xlsx
+*.db
+*.db-wal
+*.db-shm
+.env
+
+backend/.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+frontend/node_modules/
+frontend/dist/
+*.mlbak

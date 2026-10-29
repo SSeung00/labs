@@ -1,0 +1,379 @@
+/* Gem Merchant — every class starts with gm-
+   Size variables (--cw · --chh · --oh · --nh · --tks · --mys) are set by fit() in ui.js from the measured height. The values below are for the first paint. */
+.gm{height:100%; display:flex; flex-direction:column;
+  --cw:62px; --chh:86px; --dw:30px; --rg:5px;
+  --oh:36px;          /* height of one opponent row */
+  --nh:50px;          /* noble height */
+  --tks:36px;         /* bank gem size */
+  --mys:24px;         /* my gem chip size */
+  --fs:1;             /* font scale */
+}
+
+/* ---------- Gem colours (variables only) ---------- */
+.gm-w{--g1:#ffffff; --g2:#e3e9f2; --g3:#93a3bd; --ink:#1f2633}
+.gm-b{--g1:#9cc6ff; --g2:#2f6fd6; --g3:#143a84; --ink:#fff}
+.gm-g{--g1:#94f0c2; --g2:#1f9e60; --g3:#0a5232; --ink:#fff}
+.gm-r{--g1:#ffa6b0; --g2:#d0324a; --g3:#741020; --ink:#fff}
+.gm-k{--g1:#a39cb0; --g2:#3b3443; --g3:#0d0a10; --ink:#fff}
+.gm-y{--g1:#fff3b0; --g2:#e3b53a; --g3:#8a600a; --ink:#2a1c06}
+
+/* Cut gem shape (filter on the outer span for the shadow, shape on the inner i) */
+.gm-gem{display:inline-block; width:15px; height:14px; vertical-align:-2px; flex:0 0 auto;
+  filter:drop-shadow(0 0 .7px rgba(0,0,0,.75)) drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+.gm-gem > i{display:block; width:100%; height:100%; clip-path:polygon(20% 0,80% 0,100% 34%,50% 100%,0 34%);
+  background:linear-gradient(150deg, rgba(255,255,255,.85) 0 13%, rgba(255,255,255,0) 14%),
+             linear-gradient(to bottom, var(--g1) 0 33%, var(--g2) 34% 72%, var(--g3))}
+.gm-gem.sm{width:12px; height:11px}
+
+/* Gem tokens (chips) */
+.gm-chip{--s:34px; position:relative; width:var(--s); height:var(--s); border-radius:50%; flex:0 0 auto; display:inline-grid; place-items:center; vertical-align:middle;
+  background:repeating-conic-gradient(var(--g2) 0 32deg, var(--g1) 32deg 45deg);
+  box-shadow:inset 0 0 0 1.5px var(--g3), 0 2px 4px rgba(0,0,0,.5)}
+.gm-chip::before{content:""; position:absolute; inset:15%; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--g1), var(--g2) 58%, var(--g3)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.gm-chip:empty::after{content:""; position:absolute; left:31%; top:31%; width:38%; height:36%; clip-path:polygon(20% 0,80% 0,100% 34%,50% 100%,0 34%);
+  background:linear-gradient(to bottom, rgba(255,255,255,.9) 0 33%, rgba(255,255,255,.4) 34%)}
+.gm-chip.gm-w:empty::after{background:linear-gradient(to bottom, #b8c5da 0 33%, #7f90ab 34%)}
+.gm-chip b{position:relative; z-index:1; font-size:12px; font-weight:900; line-height:1; color:var(--ink); text-shadow:0 0 3px var(--g2), 0 0 1px var(--g2)}
+.gm-chip.sm{--s:var(--mys, 26px)}
+.gm-chip.sm b{font-size:calc(var(--mys, 26px) * .46)}
+.gm-chip.xs{--s:14px; vertical-align:-3px; box-shadow:inset 0 0 0 1px var(--g3)}
+.gm-chip.zero{opacity:.35}
+.gm-chip.plus{box-shadow:inset 0 0 0 1.5px var(--g3), 0 0 0 2px var(--gold2), 0 2px 4px rgba(0,0,0,.5)}
+.gm-pip{display:inline-block; width:9px; height:9px; border-radius:50%; margin:0 1px; vertical-align:-1px; font-style:normal; flex:0 0 auto;
+  background:radial-gradient(circle at 35% 30%, var(--g1), var(--g2) 60%, var(--g3)); box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+
+/* Cost circles · bonus squares · small gem circles */
+.gm-dot{--dot:16px; position:relative; width:var(--dot); height:var(--dot); border-radius:50%; display:inline-grid; place-items:center; flex:0 0 auto;
+  font-style:normal; font-size:calc(var(--dot) * .66); font-weight:900; line-height:1; color:var(--ink);
+  background:radial-gradient(circle at 35% 30%, var(--g1), var(--g2) 58%, var(--g3)); box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 1px 1px rgba(0,0,0,.3);
+  text-shadow:0 0 2px var(--g3)}
+.gm-dot.gm-w, .gm-dot.gm-y{text-shadow:none}
+.gm-dot.free{opacity:.32; filter:grayscale(.4)}
+.gm-dot sup{position:absolute; right:calc(var(--dot) * -.42); top:calc(var(--dot) * -.42); min-width:calc(var(--dot) * .78); padding:0 2px; border-radius:7px;
+  font-size:max(9px, calc(var(--dot) * .52)); line-height:1.35; font-weight:900; color:#fff; background:#d6283e; text-shadow:none;
+  box-shadow:0 0 0 1px #fff8, 0 1px 2px rgba(0,0,0,.5); text-align:center; z-index:2}
+.gm-bon{display:inline-grid; place-items:center; width:20px; height:16px; border-radius:4px; flex:0 0 auto;
+  font-style:normal; font-size:11px; font-weight:900; line-height:1; color:var(--ink);
+  background:linear-gradient(160deg, var(--g1), var(--g2) 55%, var(--g3)); box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+.gm-bon.zero{opacity:.3}
+.gm-bon.ok{box-shadow:0 0 0 1.5px var(--gold2)}
+.gm-bon.gm-none{background:none; box-shadow:none; color:var(--faint); font-size:9.5px; font-weight:600}
+.gm-bon.gm-blank{background:none; box-shadow:none}
+.gm-tk{display:inline-grid; place-items:center; width:15px; height:15px; border-radius:50%; flex:0 0 auto;
+  font-style:normal; font-size:10px; font-weight:900; line-height:1; color:var(--ink);
+  background:radial-gradient(circle at 35% 30%, var(--g1), var(--g2) 60%, var(--g3)); box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+.gm-tk.zero{opacity:.25}
+
+/* ---------- Board ---------- */
+.gm-board{flex:1; min-height:0; overflow:hidden; margin:4px 5px 0; padding:4px 4px 5px; border-radius:16px;
+  box-shadow:inset 0 0 0 2px rgba(230,195,106,.2), inset 0 10px 34px rgba(0,0,0,.4); display:flex; flex-direction:column; gap:4px}
+
+/* Opponent rows (one per player) */
+.gm-opps{display:flex; flex-direction:column; gap:3px; flex:0 0 auto}
+.gm-opp{position:relative; display:flex; align-items:center; gap:5px; width:100%; height:var(--oh); padding:0 6px 0 4px; border-radius:10px; text-align:left;
+  background:rgba(0,0,0,.3); border:1px solid var(--line); color:var(--ink); font-size:calc(12px * var(--fs))}
+.gm-opp.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 12px rgba(230,195,106,.3)}
+.gm-opp.threat{border-color:#ff6b6b; background:linear-gradient(90deg, rgba(214,40,62,.32), rgba(0,0,0,.3) 60%); box-shadow:0 0 0 1px #ff6b6b}
+.gm-oav{position:relative; display:inline-flex; flex:0 0 auto}
+.gm-tag{position:absolute; left:-3px; bottom:-5px; font-size:8px; font-weight:700; line-height:1.3; padding:0 3px; border-radius:4px; background:#14221a; color:var(--muted); border:1px solid var(--line2)}
+.gm-tag.away{color:#ff9b8f}
+.gm-first{position:absolute; left:-4px; top:-5px; font-style:normal; font-size:8.5px; font-weight:800; line-height:1.3; background:var(--gold); color:#2a1c06; border-radius:5px; padding:0 3px}
+.gm-opt{flex:0 0 auto; min-width:22px; text-align:center; font-size:calc(19px * var(--fs)); font-weight:900; line-height:1; color:var(--gold2)}
+.gm-onm{flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; line-height:1.25}
+.gm-l1{display:flex; align-items:center; gap:4px; min-width:0}
+.gm-l1 .nm{font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:0 1 auto}
+.gm-l2{font-size:calc(10.5px * var(--fs)); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.gm-l2 b{color:var(--ink)}
+.gm-l2 b.hi{color:#ffb38f}
+.gm-warn{color:#ffd0d0; font-weight:800}
+.gm-good{color:var(--gold2)!important; font-weight:700}
+.gm-ocols{flex:0 0 auto; display:flex; gap:2px}
+.gm-oc{display:flex; flex-direction:column; align-items:center; gap:2px; width:17px}
+.gm-oc .gm-bon{width:17px; height:14px; font-size:10px; border-radius:3px}
+.gm-ores{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; line-height:1.1; min-width:16px}
+.gm-ores small{font-size:9px; color:var(--muted)}
+.gm-ores b{font-size:12px}
+.gm-ores.zero{opacity:.35}
+.gm-did{flex:0 0 auto; display:inline-flex; align-items:center; gap:2px; white-space:nowrap; font-size:10px; font-weight:800; line-height:1.5;
+  padding:0 5px; border-radius:8px; background:#fffdf5; color:#1b1b1b; box-shadow:0 1px 3px rgba(0,0,0,.45); animation:gmPop .45s cubic-bezier(.2,.9,.3,1.3)}
+.gm-did b{color:#a2680a}
+.gm-did .gm-dsc{color:#c0392b}
+.gm-did .gm-pip{width:8px; height:8px; margin:0}
+
+/* Nobles */
+.gm-nobles{display:flex; gap:4px; flex:0 0 auto}
+.gm-noble{position:relative; flex:1 1 0; min-width:0; max-width:120px; height:var(--nh); padding:3px 4px; border-radius:8px; color:#fff;
+  border:1px solid rgba(255,230,170,.45); background:linear-gradient(160deg,#7a5590,#3b2450); box-shadow:0 2px 6px rgba(0,0,0,.45);
+  display:flex; flex-direction:column; justify-content:space-between; align-items:stretch; text-align:left; overflow:hidden}
+.gm-nobles > .gm-noble:first-child{margin-left:auto}
+.gm-nobles > .gm-noble:last-child{margin-right:auto}
+.gm-nt{display:flex; align-items:center; justify-content:space-between; gap:2px}
+.gm-nt > b{font-size:15px; line-height:1; color:var(--gold2); text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.gm-noble .gm-req{display:flex; gap:1px}
+.gm-noble .gm-bon{width:12px; height:13px; font-size:9px; border-radius:3px}
+.gm-nme{font-size:10.5px; font-weight:800; line-height:1.15; white-space:nowrap; color:rgba(255,255,255,.8)}
+.gm-nop{display:flex; gap:3px; flex-wrap:nowrap; overflow:hidden; font-size:9.5px; font-weight:700; line-height:1; color:rgba(255,255,255,.75)}
+.gm-np{display:inline-flex; align-items:center; gap:1px}
+.gm-np.hot{color:#ffb0b0}
+.av.gm-avx{width:11px; height:11px; font-size:0; box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+.gm-noble.near{box-shadow:0 0 0 2px var(--gold2), 0 0 10px rgba(245,220,148,.45)}
+.gm-noble.near .gm-nme, .gm-noble.best .gm-nme{color:var(--gold2)}
+.gm-noble.big{width:70px; height:70px; padding:6px; flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start}
+.gm-noble.big > b{font-size:22px; line-height:1; color:var(--gold2)}
+.gm-noble.big .gm-bon{width:18px; height:18px; font-size:12px}
+.gm-final{background:var(--red); color:#fff; padding:0 6px; border-radius:999px; font-size:11px; font-weight:800; animation:blink 1.6s ease-in-out infinite}
+
+/* Card rows */
+.gm-rows{flex:1 1 0; min-height:0; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:var(--rgv, 5px)}
+.gm-row{display:flex; align-items:center; gap:var(--rg)}
+.gm-cbtn{position:relative; padding:0; border:0; background:none; border-radius:7px; display:block; flex:0 0 auto}
+.gm-card{--dot:min(calc(var(--cw, 62px) * .25), calc(var(--chh, 86px) * .19), 24px);
+  position:relative; width:var(--cw, 62px); height:var(--chh, 86px); border-radius:7px; overflow:visible; flex:0 0 auto; display:block;
+  background:linear-gradient(165deg, #fffdf8 0%, var(--t2, #eee) 100%); border:1px solid rgba(0,0,0,.28);
+  box-shadow:0 2px 6px rgba(0,0,0,.45); color:#1d1d1d; text-align:left; -webkit-user-select:none; user-select:none}
+.gm-card::before{content:""; position:absolute; left:0; right:0; top:0; height:24%; border-radius:7px 7px 0 0; background:linear-gradient(180deg, var(--band, transparent), transparent)}
+.gm-card.gm-w{--t2:#dfe5ef; --band:rgba(140,160,195,.5)}
+.gm-card.gm-b{--t2:#c6d8f6; --band:rgba(47,111,214,.45)}
+.gm-card.gm-g{--t2:#c2e9d3; --band:rgba(31,158,96,.45)}
+.gm-card.gm-r{--t2:#f4c7ce; --band:rgba(208,50,74,.42)}
+.gm-card.gm-k{--t2:#cdc6d5; --band:rgba(59,52,67,.5)}
+.gm-pt{position:absolute; top:3px; left:5px; font-size:min(calc(var(--cw, 62px) * .29), calc(var(--chh, 86px) * .22)); font-weight:900; line-height:1; color:#fff;
+  text-shadow:0 0 2px #000, 0 1px 2px rgba(0,0,0,.7), 0 0 1px #000}
+.gm-card > .gm-gem{position:absolute; top:4px; right:4px; width:min(calc(var(--cw, 62px) * .26), calc(var(--chh, 86px) * .2)); height:min(calc(var(--cw, 62px) * .24), calc(var(--chh, 86px) * .185))}
+.gm-art{position:absolute; left:50%; top:42%; width:40%; height:28%; transform:translate(-50%,-50%); opacity:.18;
+  clip-path:polygon(20% 0,80% 0,100% 34%,50% 100%,0 34%); background:linear-gradient(to bottom, var(--g1) 0 33%, var(--g2) 34% 72%, var(--g3))}
+.gm-cost{position:absolute; left:3px; right:3px; bottom:3px; display:flex; flex-wrap:wrap-reverse; gap:2px}
+.gm-card .gm-dot{--dot:inherit}
+.gm-blind{position:absolute; left:0; right:0; bottom:0; text-align:center; font-size:9px; font-weight:800; color:#fff; background:rgba(0,0,0,.55); line-height:1.5; border-radius:0 0 6px 6px}
+/* Centre badge: Can buy · Need N · If taken ✓ (wraps to two lines when the card is too narrow) */
+.gm-tag2{position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); z-index:1;
+  width:max-content; max-width:calc(var(--cw, 62px) - 6px); text-align:center; word-break:keep-all; overflow-wrap:anywhere;
+  font-size:clamp(9px, calc(var(--cw, 62px) * .15), 12.5px); font-weight:900; line-height:1.45; padding:0 5px; border-radius:7px; pointer-events:none}
+.gm-tag2.ok{background:#1f9e55; color:#fff; box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.gm-tag2.will{background:var(--gold2); color:#3a2700; box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.gm-tag2.no{background:rgba(255,255,255,.82); color:#b4182c; border:1px solid rgba(180,24,44,.45)}
+.gm-card.win .gm-tag2.ok{background:linear-gradient(180deg,#f5d36a,#d79a1c); color:#2a1c06}
+.gm-flags{position:absolute; left:50%; top:2px; transform:translateX(-50%); display:flex; gap:2px; z-index:1}
+.gm-fl{font-style:normal; font-size:10px; font-weight:900; line-height:1.4; white-space:nowrap}
+.gm-fl.thr{background:#d6283e; color:#fff; border-radius:6px; padding:0 3px; box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.gm-fl.nob{font-size:11px; filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.gm-card.can{box-shadow:0 0 0 2.5px #33d17a, 0 0 12px rgba(51,209,122,.55), 0 2px 6px rgba(0,0,0,.45)}
+.gm-card.can.idle{box-shadow:0 0 0 2px rgba(51,209,122,.7), 0 2px 6px rgba(0,0,0,.45)}
+.gm-card.will{box-shadow:0 0 0 2.5px var(--gold2), 0 0 12px rgba(245,220,148,.6), 0 2px 6px rgba(0,0,0,.45)}
+.gm-card.cant .gm-art{opacity:.12}
+.gm-card.far .gm-tag2.no{background:rgba(255,255,255,.6); color:#7a2a36; border-color:rgba(122,42,54,.3); font-weight:800}
+.gm-card.fresh{outline:2px solid var(--gold2); outline-offset:1px}
+.gm-card.pop{animation:gmPop .6s cubic-bezier(.2,.9,.3,1.3)}
+.gm-card.gm-none{background:rgba(0,0,0,.18); border:1px dashed rgba(255,255,255,.18); box-shadow:none}
+.gm-card.gm-none::before{display:none}
+.gm-card.lg{--cw:84px; --chh:117px; --dot:21px}
+.gm-card.mini{--cw:30px; --chh:42px; border-radius:5px}
+.gm-card.mini .gm-cost, .gm-card.mini .gm-blind{display:none}
+.gm-card.mini .gm-pt{top:2px; left:3px; font-size:10px}
+.gm-card.mini > .gm-gem{top:3px; right:2px; width:9px; height:8px}
+.gm-card.mini .gm-art{top:62%; width:56%; opacity:.45}
+.gm-card.mini.blind{outline:1.5px dashed rgba(255,255,255,.75); outline-offset:1px}
+.gm-cbtn:active .gm-card{transform:translateY(-3px)}
+
+/* Card backs · decks (colour per tier) */
+.gm-deck, .gm-card.gm-back{color:#fff; border:1px solid rgba(255,255,255,.35);
+  background:repeating-linear-gradient(45deg, rgba(255,255,255,.09) 0 4px, transparent 4px 9px), var(--tc);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.25), 0 2px 6px rgba(0,0,0,.45)}
+.gm-deck.t1, .gm-back.t1{--tc:linear-gradient(160deg,#3f9a6c,#1b5539)}
+.gm-deck.t2, .gm-back.t2{--tc:linear-gradient(160deg,#c49a35,#7a5712)}
+.gm-deck.t3, .gm-back.t3{--tc:linear-gradient(160deg,#4f63b8,#232f6e)}
+.gm-card.gm-back::before{display:none}
+.gm-card.gm-back{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px}
+.gm-card.gm-back b{font-size:18px}
+.gm-card.gm-back small{font-size:9.5px; opacity:.85}
+.gm-card.gm-back.mini b{font-size:13px}
+.gm-card.gm-back.mini small{display:none}
+.gm-deck{width:var(--dw); height:var(--chh, 86px); padding:0; border-radius:7px; flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px}
+.gm-deck b{font-size:15px; line-height:1}
+.gm-deck small{font-size:10.5px; font-weight:700; opacity:.9}
+.gm-deck.empty{opacity:.3}
+.gm-deck.big{width:66px; height:92px}
+
+/* Bank */
+.gm-bank{display:flex; justify-content:center; gap:4px; flex:0 0 auto; height:calc(var(--tks) + 8px); padding-top:2px}
+.gm-tok{position:relative; width:calc(var(--tks) + 10px); height:calc(var(--tks) + 6px); padding:0; border:0; background:none; display:grid; place-items:center}
+.gm-tok > .gm-chip{--s:var(--tks); transition:transform .15s, box-shadow .15s}
+.gm-tok .gm-n{position:absolute; right:-1px; bottom:-1px; min-width:19px; height:19px; padding:0 4px; border-radius:10px; text-align:center;
+  font-size:11.5px; font-weight:800; line-height:17px; color:#fff; background:rgba(0,0,0,.78); border:1px solid rgba(255,255,255,.3)}
+.gm-tok em{position:absolute; left:-3px; top:-4px; font-style:normal; font-weight:900; font-size:12px; line-height:1.5; color:#1a1206; background:var(--gold2); border-radius:9px; padding:0 5px; box-shadow:0 1px 3px rgba(0,0,0,.5); z-index:1}
+.gm-tok.live > .gm-chip{box-shadow:inset 0 0 0 1.5px var(--g3), 0 0 0 2px rgba(255,255,255,.18), 0 2px 4px rgba(0,0,0,.5)}
+.gm-tok.sel > .gm-chip{transform:translateY(-3px); box-shadow:inset 0 0 0 1.5px var(--g3), 0 0 0 3px var(--gold2), 0 6px 10px rgba(0,0,0,.5)}
+.gm-tok.empty > .gm-chip{opacity:.28; filter:grayscale(.5)}
+.gm-tok.pulse > .gm-chip, .gm-col.pulse .gm-chip{animation:gmPulse .75s ease}
+
+/* ---------- Bottom dock ---------- */
+.gm-dock{padding-top:5px; padding-bottom:calc(7px + env(safe-area-inset-bottom,0px))}
+.gm-bar{height:40px; display:flex; align-items:center; gap:6px; margin-bottom:5px}
+.gm-hint{flex:1; min-width:0; margin:0; font-size:calc(12.5px * var(--fs)); line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical}
+.gm-bar.picking .gm-hint{text-align:left; font-size:12px}
+.gm-bar .btn.small{min-height:40px; padding:6px 10px; flex:0 0 auto}
+.gm-bar .btn.primary{display:inline-flex; align-items:center; gap:5px}
+.gm-gw{color:#ffe08a!important}
+.gm-badt{color:#ff9b8f; font-weight:800}
+.gm-me{position:relative; display:flex; align-items:stretch; gap:5px}
+.gm-score{flex:0 0 auto; min-width:54px; padding:3px 2px; border-radius:10px; border:1px solid var(--line2); background:rgba(0,0,0,.3);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.15}
+.gm-score b{font-size:calc(20px * var(--fs)); color:var(--gold2)}
+.gm-score small{font-size:11px; color:var(--muted)}
+.gm-score i{font-style:normal; font-size:9.5px; color:var(--muted); white-space:nowrap}
+.gm-score i.hi{color:#ffb38f}
+.gm-score i.over{color:#ff9b8f; font-weight:800}
+.gm-score.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 12px rgba(230,195,106,.35)}
+.gm-medid{position:absolute; left:0; top:-13px; z-index:2; display:flex; align-items:center; gap:3px; pointer-events:none}
+.gm-medid small{font-size:9.5px; font-weight:800; color:var(--gold2); text-shadow:0 1px 2px #000}
+.gm-cols{flex:1; min-width:0; display:flex; justify-content:space-around; align-items:center; gap:1px; padding:3px 1px; border-radius:10px; background:rgba(0,0,0,.18)}
+.gm-col{display:flex; flex-direction:column; align-items:center; gap:3px}
+.gm-col .gm-bon{width:calc(var(--mys, 26px) - 3px); height:16px}
+.gm-myres{flex:0 0 auto; display:flex; gap:3px; align-items:center}
+.gm-rbtn{padding-top:2px}
+.gm-rslot{width:30px; height:42px; border-radius:5px; border:1px dashed rgba(255,255,255,.18)}
+.gm-mtag{position:absolute; left:50%; bottom:-3px; transform:translateX(-50%); font-size:9.5px; font-weight:900; line-height:1.35; padding:0 3px; border-radius:5px; white-space:nowrap; z-index:1}
+.gm-mtag.ok{background:#1f9e55; color:#fff}
+.gm-mtag.will{background:var(--gold2); color:#3a2700}
+.gm-mtag.no{background:#fff; color:#b4182c}
+.gm-pips{display:inline-flex; align-items:center}
+
+/* ---------- Bottom sheets ---------- */
+.scrim.gm-scrim{place-items:end center; padding:0}
+.modal.gm-sheet{border-radius:18px 18px 0 0; max-height:calc(86dvh / var(--zoom)); padding:18px 16px calc(14px + env(safe-area-inset-bottom,0px)); animation:gmUp .22s cubic-bezier(.2,.9,.3,1)}
+.gm-sheet-in .eyebrow{margin-right:40px}
+.gm-stop{display:flex; gap:12px; align-items:flex-start; margin:4px 0 10px}
+.gm-stxt{flex:1; min-width:0}
+.gm-stxt h2{margin:0 0 4px; font-size:18px; line-height:1.3}
+.gm-stxt p{margin:0 0 6px; font-size:13px}
+.gm-good{color:var(--gold2)!important; font-weight:700}
+.gm-bad{color:#ff9b8f!important}
+.gm-pay{display:flex; flex-direction:column; gap:5px; padding:8px 10px; border-radius:10px; background:rgba(0,0,0,.22)}
+.gm-payrow{display:grid; grid-template-columns:24px 1fr auto; align-items:center; gap:8px; font-size:13px}
+.gm-payrow .gm-dot{--dot:22px}
+.gm-calc{color:var(--muted)}
+.gm-calc b{color:var(--ink)}
+.gm-with{display:flex; align-items:center; gap:3px; font-weight:700}
+.gm-paysum{margin:8px 2px 0; font-size:13.5px; line-height:1.5}
+.gm-sbtns{display:flex; gap:8px; margin-top:14px}
+.gm-bw{flex:1; display:flex; flex-direction:column; gap:4px; text-align:center}
+.gm-bw .btn{width:100%}
+.gm-bw small{font-size:11.5px; color:var(--muted); line-height:1.35}
+.gm-phead{display:flex; align-items:center; gap:10px; margin-bottom:6px}
+.gm-phead h2{margin:0}
+.gm-big{color:var(--gold2); margin-left:4px}
+.gm-sec{font-size:12px; letter-spacing:.08em; color:var(--gold); font-weight:700; margin:12px 0 6px}
+.gm-prow{display:flex; gap:6px; flex-wrap:wrap}
+.gm-pcol{display:flex; flex-direction:column; align-items:center; gap:3px; min-width:46px}
+.gm-pcol small{font-size:10.5px; color:var(--muted)}
+.gm-pcol .gm-bon{width:28px; height:22px; font-size:13px}
+.gm-resrow{gap:10px}
+.gm-rescell{display:flex; flex-direction:column; align-items:center; gap:4px}
+.gm-rescell small{font-size:11px; color:var(--muted)}
+.gm-none-t{color:var(--muted); font-size:13px}
+.gm-nrow{display:flex; align-items:center; gap:8px; padding:6px 2px; border-bottom:1px solid var(--line); font-size:13.5px}
+.gm-nrow > span:nth-child(2){flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.gm-nrow small{color:var(--muted); font-size:12px; min-width:58px; text-align:right}
+.gm-nprog{display:flex; gap:3px}
+.gm-nchoice .gm-req{display:flex; gap:4px; margin-top:5px}
+
+/* Discard dialog */
+.gm-disc{display:flex; flex-direction:column; gap:4px; margin:2px 0}
+.gm-drow{display:flex; align-items:center; gap:10px; padding:1px 6px; border-radius:10px; background:rgba(255,255,255,.04)}
+.gm-dname{flex:1; display:flex; flex-direction:column; line-height:1.25; font-weight:700; font-size:14px}
+.gm-dname small{font-weight:400; color:var(--muted); font-size:11.5px}
+.gm-step{width:42px; height:40px; border-radius:10px; border:1px solid var(--line2); background:rgba(255,255,255,.06); font-size:20px; font-weight:800; padding:0}
+.gm-step:disabled{opacity:.3}
+.gm-dn{min-width:22px; text-align:center; font-size:17px}
+.gm-dleft{font-size:13.5px; color:var(--muted); text-align:center; margin-top:6px; line-height:1.4}
+.gm-dleft small{font-size:12px}
+.gm-lack{color:#ff9b8f; font-weight:800}
+.gm-dmodal .row{margin-top:10px}
+.gm-dmodal p{margin-bottom:8px}
+.gm-dleft b{color:var(--gold2)}
+
+/* ---------- Two-line seat rows (spectators, roomy landscape): name and status on top; colours, reserved cards and nobles below ---------- */
+.gm-opp.rich{display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-rows:auto auto; align-content:center; column-gap:8px; row-gap:3px; padding:3px 8px 3px 6px}
+.gm-rl{grid-row:1 / span 2; display:flex; flex-direction:column; align-items:center; gap:4px}
+.gm-rl .gm-opt{font-size:calc(21px * var(--fs))}
+.gm-r1{display:flex; align-items:center; gap:6px; min-width:0}
+.gm-r1 .gm-l1{flex:0 1 auto; min-width:0}
+.gm-r1 .gm-l2{flex:1 1 0; min-width:0; text-align:right}
+.gm-r2{display:flex; align-items:center; gap:8px; min-width:0}
+.gm-opp.rich .gm-ocols{gap:3px}
+.gm-opp.rich .gm-oc{width:20px}
+.gm-opp.rich .gm-oc .gm-bon{width:20px; height:16px; font-size:11px}
+.gm-opp.rich .gm-tk{width:18px; height:18px; font-size:11px}
+.gm-ores.rich{flex-direction:row; align-items:center; gap:3px; min-width:0}
+.gm-ores.rich .gm-rslot{flex:0 0 auto}
+.gm-onob{flex:0 0 auto; font-size:16px; line-height:1; white-space:nowrap; filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.gm-onob small{font-size:11px; font-weight:800; color:var(--gold2)}
+
+/* ---------- Spectators ---------- */
+.gm-spec .gm-dock{padding-top:4px; padding-bottom:calc(5px + env(safe-area-inset-bottom,0px))}
+.gm-spec .gm-bar{height:auto; min-height:30px; margin:0}
+.gm-spec .gm-hint{text-align:center}
+.gm-noble.spec .gm-nop{flex-wrap:wrap; column-gap:4px; row-gap:2px}
+/* who could buy this card now (avatars) */
+.gm-tag2.who{display:flex; align-items:center; padding:2px 4px; line-height:1; background:rgba(16,28,21,.85); border:1px solid rgba(255,255,255,.28); box-shadow:0 1px 3px rgba(0,0,0,.45)}
+.gm-tag2.who .av{--avs:clamp(14px, calc(var(--cw, 62px) * .22), 30px); width:var(--avs); height:var(--avs); font-size:calc(var(--avs) * .55); box-shadow:0 0 0 1.5px rgba(16,28,21,.95)}
+.gm-tag2.who .av + .av{margin-left:-3px}
+.gm-card.some{box-shadow:0 0 0 1.5px rgba(255,255,255,.4), 0 2px 6px rgba(0,0,0,.45)}
+
+/* ---------- Landscape: felt (card rows + bank column) on the left, side column (seats · nobles · dock) on the right ----------
+   The side column is drawn larger on big screens with zoom (--sz, set by fit() in ui.js). */
+.gm.gm-land{flex-direction:row; align-items:stretch; gap:6px; padding:4px 5px}
+.gm-land .gm-board{flex:0 0 auto; margin:0; flex-direction:row; align-items:center; justify-content:center; gap:6px; padding:4px 6px}
+.gm-land .gm-rows{flex:0 0 auto; align-self:stretch}
+.gm-land .gm-bank{flex-direction:column; height:auto; padding:0; gap:var(--bkg, 4px)}
+.gm-land .gm-side{zoom:var(--sz, 1); flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:4px}
+.gm-land .gm-opps{flex:1 1 auto; min-height:0; justify-content:space-evenly}
+.gm-land .gm-dock{border:1px solid var(--line); border-radius:12px; padding:5px 7px calc(6px + env(safe-area-inset-bottom,0px))}
+.gm-land .gm-card{--dot:min(calc(var(--cw) * .25), calc(var(--chh) * .19), 32px)}
+.gm-land .gm-tag2{font-size:clamp(9px, calc(var(--cw) * .15), 17px)}
+.gm-land .gm-fl{font-size:clamp(10px, calc(var(--cw) * .14), 16px)}
+.gm-land .gm-deck b{font-size:clamp(15px, calc(var(--dw) * .5), 22px)}
+.gm-land .gm-deck small{font-size:clamp(10.5px, calc(var(--dw) * .33), 15px)}
+.gm-land .gm-tok .gm-n{--nb:clamp(19px, calc(var(--tks) * .46), 30px); min-width:var(--nb); height:var(--nb); line-height:calc(var(--nb) - 2px);
+  font-size:clamp(11.5px, calc(var(--tks) * .3), 18px); border-radius:999px}
+
+/* a visiting noble flying to its new owner (ui.js flights()) */
+.gm-nfly{display:grid; place-items:center; border-radius:8px; border:1px solid rgba(255,230,170,.6); background:linear-gradient(160deg,#7a5590,#3b2450); box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.gm-nfly i{font-style:normal; font-size:14px; line-height:1}
+
+/* Sheets and dialogs in landscape: wider, two columns, so they fit a phone held sideways without scrolling */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .modal.gm-sheet{max-width:min(780px, calc(100vw / var(--zoom) - 24px)); padding:14px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+  .gm-sheet-in.two{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:18px; align-items:start}
+  .gm-sheet-in.two .gm-stop{margin-bottom:0}
+  .gm-sheet-in.two .gm-sc2 > :first-child{margin-right:38px}      /* room for the close button */
+  .gm-sheet-in.two .gm-sc2 > .gm-sec:first-child{margin-top:4px}
+  .gm-sheet-in.two .gm-sbtns{margin-top:10px}
+  .modal.gm-dmodal, .modal.gm-nmodal{max-width:min(700px, calc(100vw / var(--zoom) - 24px)); padding:14px 16px 12px}
+  .gm-dmodal h2, .gm-nmodal h2{margin:2px 0 4px; font-size:18px}
+  .gm-dmodal p, .gm-nmodal p{margin-bottom:6px}
+  .gm-dmodal .gm-disc{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:5px}
+  .gm-dmodal .gm-drow{gap:4px; padding:2px 4px}
+  .gm-dmodal .gm-step{width:36px}
+  .gm-dmodal .gm-dn{min-width:18px}
+  .gm-dmodal .gm-dname{min-width:0; font-size:13px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+  .gm-dmodal .gm-dname small{display:none}
+  .gm-dmodal .gm-dleft{margin-top:4px}
+  .gm-dmodal .row{margin-top:6px}
+  .gm-nmodal .choices{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr))}
+}
+
+@keyframes gmPop{from{transform:translateY(-14px) scale(.85); opacity:0}}
+@keyframes gmUp{from{transform:translateY(40px); opacity:0}}
+@keyframes gmPulse{0%{transform:scale(1)} 35%{transform:scale(1.2); box-shadow:0 0 0 4px rgba(245,220,148,.7), 0 0 16px rgba(245,220,148,.8)} 100%{transform:scale(1)}}
+
+/* Narrow phones (around 360px) */
+@media (max-width:374px){
+  .gm-tok{width:calc(var(--tks) + 7px)}
+  .gm-bank{gap:2px}
+  .gm-score{min-width:50px}
+  .gm-opp{gap:4px; padding-right:4px}
+  .gm-oc{width:16px}
+  .gm-oc .gm-bon{width:16px}
+}

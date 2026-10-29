@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f1a15">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="놀이방">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>보드게임 놀이방 · Game Room</title>
+<meta name="description" content="친구들과 폰으로 하는 보드게임 — 링크나 QR로 바로 입장, 빈자리는 AI 가 채워요. Board games with friends on your phone.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="놀이방 · Game Room">
+<meta property="og:title" content="보드게임 놀이방 — 같이 한 판 해요!">
+<meta property="og:description" content="달무티 · 원카드 · 포커 · 고스톱 · 라이어 게임 · 요트 다이스 · 거짓말 주사위 외 11가지. 링크나 QR로 바로 들어와요.">
+<meta property="og:image" content="https://sseung00.github.io/boardgames/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://sseung00.github.io/boardgames/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="core/style.css">
+</head>
+<body>
+<div id="app">
+  <!-- Home -->
+  <section id="home" class="screen scroll">
+    <div class="home">
+      <div class="topbtns"><button class="langbtn" aria-label="Language">🌐 EN</button><button class="roundbtn" id="bSettings" data-ko-label="설정" data-en-label="Settings" aria-label="설정">⚙️</button></div>
+      <h1 class="logo" data-ko="놀이방" data-en="Game Room">놀이방</h1>
+      <p class="sub" data-ko="친구들과 폰으로 하는 보드게임 · 빈자리는 AI 가 채워요" data-en="Board games with friends on your phone · AI fills empty seats">친구들과 폰으로 하는 보드게임 · 빈자리는 AI 가 채워요</p>
+      <div class="kakao" id="kakaoBar" hidden></div>
+      <div id="homeResume"></div>
+      <div class="sheet">
+        <label class="eyebrow" for="inName" data-ko="이름" data-en="Name">이름</label>
+        <div class="namerow">
+          <button class="avbtn" id="bLook" data-ko-label="프로필 꾸미기" data-en-label="Edit profile" aria-label="프로필 꾸미기"></button>
+          <input id="inName" class="inp" maxlength="10" autocomplete="nickname" placeholder="다른 사람에게 보일 이름" data-ko-ph="다른 사람에게 보일 이름" data-en-ph="Name others will see">
+        </div>
+        <div class="btns2">
+          <button class="btn primary" id="bCreate" data-ko="방 만들기" data-en="Create room">방 만들기</button>
+          <button class="btn" id="bSolo" data-ko="혼자 하기 (AI)" data-en="Solo (vs AI)">혼자 하기 (AI)</button>
+        </div>
+        <div class="or" data-ko="친구 방에 들어가기" data-en="Join a friend's room">친구 방에 들어가기</div>
+        <div class="split2">
+          <input id="inCode" class="inp code" maxlength="5" autocomplete="off" placeholder="방 코드" data-ko-ph="방 코드" data-en-ph="Code" aria-label="Room code">
+          <button class="btn" id="bJoin" data-ko="들어가기" data-en="Join">들어가기</button>
+        </div>
+        <button class="linkbtn tvlink" id="bWatch" data-ko="📺 TV·태블릿을 관전 화면으로 열기 (코드 입력 후)" data-en="📺 Open as a watching screen on a TV or tablet (enter the code first)">📺 TV·태블릿을 관전 화면으로 열기 (코드 입력 후)</button>
+        <div class="err" id="homeErr" role="alert"></div>
+      </div>
+      <div class="eyebrow mt" data-ko="게임 — 눌러서 규칙 보기" data-en="Games — tap for rules">게임 — 눌러서 규칙 보기</div>
+      <div class="ggrid" id="homeGames"></div>
+      <p class="foot" data-ko="방장의 화면이 게임을 진행합니다 · 서버 없이 기기끼리 직접 연결" data-en="The host's screen runs the game · devices connect directly, no server">방장의 화면이 게임을 진행합니다 · 서버 없이 기기끼리 직접 연결</p>
+      <p class="foot links">
+        <button class="linkbtn" id="bStats" data-ko="📊 내 전적" data-en="📊 My record">📊 내 전적</button>
+        <button class="linkbtn" id="bReplays" data-ko="🎬 다시보기" data-en="🎬 Replays">🎬 다시보기</button>
+        <button class="linkbtn" id="bInstall" hidden data-ko="📲 앱으로 설치" data-en="📲 Install app">📲 앱으로 설치</button>
+        <button class="linkbtn" id="bNetLog" data-ko="연결 기록 보기" data-en="Connection log">연결 기록 보기</button>
+      </p>
+    </div>
+  </section>
+
+  <!-- Lobby -->
+  <section id="lobby" class="screen scroll" hidden>
+    <div class="home"><div class="sheet" id="lobbySheet"></div></div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="screen gscreen" hidden>
+    <header class="gbar">
+      <div class="gtitle"><b id="gTitle"></b></div>
+      <div class="gbtns">
+        <button class="ibtn langbtn" aria-label="Language">🌐 EN</button>
+        <button class="ibtn" id="bEmote" data-ko-label="반응 보내기" data-en-label="Send a reaction" aria-label="Reaction">😀</button>
+        <button class="ibtn" id="bLog" data-ko-label="기록" data-en-label="Log" aria-label="Log">📜</button>
+        <button class="ibtn" id="bRules" data-ko-label="규칙" data-en-label="Rules" aria-label="Rules">❔</button>
+        <button class="ibtn" id="bMenu" data-ko-label="메뉴" data-en-label="Menu" aria-label="Menu">☰</button>
+      </div>
+      <div class="gstatus" id="gStatus"></div>
+      <div class="timer" id="timer"></div>
+    </header>
+    <div class="ticker" id="ticker"></div>
+    <div class="awaybar" id="awayBar" hidden></div>
+    <div class="specbar" id="specBar" hidden></div>
+    <div class="replaybar" id="replayBar" hidden></div>
+    <main id="stage" class="stage"></main>
+  </section>
+</div>
+<!-- Phones held sideways during a game: the game screens are made for portrait -->
+<div class="rotate" id="rotateHint">
+  <div>
+    <div class="rotate-ico">📱</div>
+    <h3 data-ko="폰을 세로로 돌려 주세요" data-en="Turn your phone upright">폰을 세로로 돌려 주세요</h3>
+    <p data-ko="게임 화면은 세로에 맞춰 만들어졌어요." data-en="The game screens are made for portrait.">게임 화면은 세로에 맞춰 만들어졌어요.</p>
+    <button class="btn small" id="bSideOk" data-ko="그래도 가로로 보기" data-en="Show it sideways anyway">그래도 가로로 보기</button>
+  </div>
+</div>
+<div id="modalHost"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script type="module" src="core/app.js"></script>
+</body>
+</html>

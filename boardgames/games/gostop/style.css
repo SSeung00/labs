@@ -1,0 +1,338 @@
+/* Go-Stop — prefix gs- · hwatu cards .hw (hwHTML in games/gostop/cards.js)
+   Portrait: opponents' panels → felt (all spare height; ui.js measures and sets the floor card size) → my panel → hint + hand.
+   The markup groups the panels (.gs-side) and the felt + dock (.gs-main); in portrait both groups dissolve (display:contents)
+   and `order` puts the four parts in the sequence above. Landscape (media query below): the side column + the main column. */
+.gs{position:relative; height:100%; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:4px; padding:4px 6px 0; overflow:hidden}
+.gs-side,.gs-main{display:contents}
+.gs-opps{order:1} .gs-table{order:2} .gs-mine{order:3} .gs-dock{order:4}
+
+/* ---------- Panels (mine and opponents') ---------- */
+.gs-opps{flex:0 0 auto; display:flex; flex-direction:column; gap:4px}
+.gs-p{position:relative; flex:0 0 auto; padding:3px 6px 3px; border-radius:10px; background:rgba(0,0,0,.32); border:1px solid var(--line); cursor:pointer; min-width:0}
+.gs-p.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 12px rgba(230,195,106,.28)}
+.gs-mine{background:rgba(0,0,0,.26)}
+.gs-mine.turn{border-color:rgba(230,195,106,.75); box-shadow:none}
+.gs-ph{display:flex; align-items:center; gap:4px; height:22px; white-space:nowrap; overflow:hidden; font-size:12.5px; min-width:0}
+.gs-ph .nm{flex:0 1 auto; min-width:1.5em; max-width:6em; overflow:hidden; text-overflow:ellipsis; font-weight:800}
+.gs-ph .av{flex:0 0 auto}
+.gs-sp{flex:1 1 0; min-width:0}
+.gs-tg{flex:0 0 auto; font-size:10.5px; padding:0 4px; border-radius:5px; background:rgba(255,255,255,.09); color:var(--muted); line-height:17px; white-space:nowrap}
+.gs-tg.ai{background:none; border:1px solid var(--line2); line-height:15px}
+.gs-tg.away{background:none; border:1px solid rgba(255,155,143,.5); color:#ff9b8f; line-height:15px}
+.gs-tg.go{background:var(--accent); color:#fff; font-weight:800}
+.gs-tg.sh{background:rgba(217,83,79,.32); color:#ffc4bb; font-weight:700}
+.gs-need{flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:11px; color:var(--muted)}
+.gs-need b{color:var(--ink); font-size:12px}
+.gs-need.ok{color:#8ff0b4; font-weight:700} .gs-need.ok b{color:#8ff0b4}
+.gs-need.warn{color:#ffb08f; font-weight:700} .gs-need.warn b{color:#ffb08f}
+.gs-need.bad{color:#fff; font-weight:800; background:rgba(217,83,79,.55); border-radius:5px; padding:0 4px; line-height:17px}
+.gs-score{flex:0 0 auto; font-size:11px; color:var(--muted); margin-left:2px}
+.gs-score b{font-size:18px; color:var(--gold2); line-height:1}
+
+/* 8 progress tiles: gwang · ribbon · animal · pi · hongdan · cheongdan · chodan · godori */
+.gs-tiles{display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:3px; margin-top:2px}
+.gs-ti{min-width:0; text-align:center; border-radius:6px; padding:1px 0 2px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.08); line-height:1.1; position:relative}
+.gs-ti small{display:block; font-size:9.5px; line-height:12px; color:var(--muted); white-space:nowrap; overflow:hidden}
+.gs-ti b{display:block; font-size:12.5px; line-height:15px; white-space:nowrap; letter-spacing:-.02em}
+.gs-ti b i{font-style:normal; font-size:10px; color:var(--gold2); margin-left:1px}
+.gs-ti.zero{opacity:.5}
+.gs-ti.done{background:rgba(230,195,106,.22); border-color:rgba(230,195,106,.65)}
+.gs-ti.done b{color:var(--gold2)}
+.gs-ti.dead{opacity:.32}
+.gs-ti.dead b{color:var(--muted)}
+.gs-ti.good{background:rgba(92,196,137,.26); border-color:rgba(92,196,137,.85)}
+.gs-ti.good b,.gs-ti.good small{color:#a6f5c5}
+.gs-ti.warn{background:rgba(224,121,74,.34); border-color:#ff9e6e; animation:gsWarn 1.6s ease-in-out infinite alternate}
+.gs-ti.warn b,.gs-ti.warn small{color:#ffd2bd}
+.gs-ti.bak::after{content:attr(data-bak); position:absolute; top:-4px; right:-3px; font-size:8.5px; font-weight:900; line-height:12px; padding:0 2px; border-radius:3px; background:var(--red); color:#fff}
+@keyframes gsWarn{to{box-shadow:0 0 8px rgba(255,140,90,.55)}}
+
+/* Row 3: last move · danger · running total */
+.gs-pf{display:flex; align-items:center; gap:4px; height:20px; margin-top:2px; font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden}
+.gs-lm{flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:2px; overflow:hidden; border-radius:5px; padding:0 2px}
+.gs-lm.fresh{background:rgba(245,220,148,.14); box-shadow:inset 0 0 0 1px rgba(245,220,148,.35)}
+.gs-lm i{font-style:normal; opacity:.7; padding:0 1px}
+.gs-lm em{font-style:normal; color:var(--muted)}
+.gs-lm .got{font-weight:800; color:#8ff0b4; margin-left:3px}
+.gs-lm .miss{color:var(--faint); margin-left:3px}
+.gs-lm .cb{font-weight:800; color:var(--gold2); margin-left:3px}
+.gs-lm .bad{font-weight:800; color:#ff9b8f; margin-left:3px}
+.gs-faint{color:var(--faint); font-style:normal}
+.gs-dg{flex:0 0 auto; font-size:10.5px; font-weight:700; padding:0 4px; border-radius:5px; line-height:17px; background:rgba(217,83,79,.42); color:#ffd6cf}
+.gs-dg.opp{background:rgba(79,143,217,.3); color:#d3e5ff}
+.gs-tot{flex:0 0 auto; font-size:10.5px; color:var(--muted)}
+.gs-tot b{color:var(--ink)}
+/* Text-sized cards (last move) */
+.gs-tk{--mc:#333; --mb:#efe6cf; flex:0 0 auto; display:inline-flex; align-items:center; gap:1px; height:16px; padding:0 3px 0 2px; border-radius:3px; background:var(--mb);
+  color:#5c533f; font-size:10px; font-weight:800; line-height:1; box-shadow:0 1px 1px rgba(0,0,0,.4)}
+.gs-tk b{color:var(--mc); font-size:11px; font-weight:900}
+.gs-tk.t-g{box-shadow:inset 0 -2px 0 #d39e17, 0 1px 1px rgba(0,0,0,.4); color:#8a5b00}
+.gs-tk.t-hong,.gs-tk.t-rain{box-shadow:inset 0 -2px 0 #d42a2a, 0 1px 1px rgba(0,0,0,.4)}
+.gs-tk.t-cheong{box-shadow:inset 0 -2px 0 #245fc4, 0 1px 1px rgba(0,0,0,.4)}
+.gs-tk.t-cho{box-shadow:inset 0 -2px 0 #e66a52, 0 1px 1px rgba(0,0,0,.4)}
+.gs-tk.t-y,.gs-tk.t-go,.gs-tk.t-guk{box-shadow:inset 0 -2px 0 #557f2c, 0 1px 1px rgba(0,0,0,.4)}
+.gs-tk.t-pp{box-shadow:inset 0 -2px 0 #3a3a3a, 0 1px 1px rgba(0,0,0,.4)}
+.gs-tk.t-b{--mb:#f0dcff; --mc:#7a3fc0}
+
+/* My captured cards (large screens only — tap to see them on small screens) */
+.gs-piles{display:grid; grid-template-columns:1fr 1.25fr 1.15fr 1.7fr; gap:6px; margin-top:3px}
+.gs-pc{display:flex; height:31px; min-width:0; overflow:hidden; align-items:center}
+.gs.tall .gs-pc,.gs.roomy .gs-pc{height:37px}
+.gs.tall .gs-pc .hw.mini,.gs.roomy .gs-pc .hw.mini{--cw:24px; --ch:37px}
+/* Landing spot of a captured card flying to a panel whose piles are hidden (ui.js capTarget) */
+.hw.gs-tgt{position:absolute; visibility:hidden; pointer-events:none; z-index:0}
+
+/* ---------- Felt: draw pile · floor ---------- */
+.gs-table{flex:1 1 0; min-height:90px; border-radius:16px; position:relative; overflow:hidden;
+  box-shadow:inset 0 0 0 2px rgba(230,195,106,.22), inset 0 10px 34px rgba(0,0,0,.4)}
+.gs-floor{position:absolute; inset:0; display:grid; justify-content:center; align-content:center; align-items:start; gap:8px 6px; padding:9px 8px}
+.gs-stack{--cw:var(--fw,44px); --ch:var(--fh,68px); position:relative; width:var(--cw); height:var(--ch); transition:transform .15s}
+.gs-stack .hw{--cw:var(--fw,44px); --ch:var(--fh,68px)}
+.gs-stack.match{transform:translateY(-3px)}
+.gs-stack.hm::before{content:""; position:absolute; left:18%; right:18%; bottom:-5px; height:3px; border-radius:2px; background:rgba(143,240,180,.85)}
+.gs-stack.ghost{border:2px dashed rgba(245,220,148,.75); border-radius:6px; display:grid; place-items:center; text-align:center; font-size:11px; line-height:1.25; color:var(--gold2)}
+.gs-fc{position:absolute; left:0}
+.gs-fc.tap{cursor:pointer}
+.gs-mk{position:absolute; top:-5px; right:-5px; z-index:4; min-width:15px; height:15px; border-radius:8px; display:grid; place-items:center; font-size:10px; font-weight:900; line-height:1; color:#fff; box-shadow:0 1px 3px rgba(0,0,0,.6)}
+.gs-mk.bad{background:var(--red)}
+.gs-mk.good{background:#2f9e62}
+.gs-mk.spec{background:var(--gold2); color:#2a1d00}
+.gs-pk{position:absolute; left:50%; top:-7px; transform:translateX(-50%); z-index:5; font-size:10px; font-weight:900; background:var(--red); color:#fff; border-radius:5px; padding:0 5px; line-height:15px}
+.gs-deck .hw{box-shadow:2px 2px 0 #6d1219, 4px 4px 0 #4e0d12, 0 4px 8px rgba(0,0,0,.4)}
+.gs-dk{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-shadow:0 1px 3px #000, 0 0 6px #000; pointer-events:none}
+.gs-dk b{font-size:calc(var(--fw,44px) * .42); line-height:1.05}
+.gs-dk small{font-size:max(10px, calc(var(--fw,44px) * .2)); font-weight:700}
+.gs-nag{position:absolute; top:-6px; right:-6px; font-size:10.5px; font-weight:900; color:#fff; background:var(--red); border-radius:5px; padding:0 4px; line-height:16px; text-shadow:none}
+
+/* Choosing: two buttons (card + what it does) at the bottom of the felt; ui.js shrinks --pw until the panel fits the felt */
+.gs-pick{position:absolute; left:0; right:0; bottom:7px; width:calc(100% - 14px); max-width:560px; margin:0 auto; z-index:6; padding:6px 8px 8px; border-radius:14px;
+  background:rgba(8,20,14,.94); border:1px solid var(--gold); text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.6); animation:rise .2s}
+.gs-pick-t{font-size:13px; line-height:17px; margin-bottom:5px}
+.gs-pick-t b{color:var(--gold2)}
+.gs-pick-c{display:flex; justify-content:center; gap:8px}
+.gs-pbtn{flex:1 1 0; min-width:0; max-width:250px; min-height:44px; padding:5px; display:flex; align-items:center; gap:7px; text-align:left; border-radius:10px;
+  background:rgba(255,255,255,.06); border:1px solid var(--line2)}
+.gs-pbtn .hw{--cw:var(--pw,52px); --ch:calc(var(--pw,52px) * 1.55)}
+.gs-pi{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px}
+.gs-pbtn small{font-size:12px; line-height:15px; color:var(--ink); font-weight:700}
+.gs-pbtn em{font-style:normal; font-size:11.5px; line-height:14px; font-weight:800}
+.gs-pbtn:active{background:rgba(127,224,166,.16)}
+.gs-pbtn:active .hw{transform:translateY(-3px)}
+.gold{color:var(--gold2)} .block{color:#9cc8ff} .bad{color:#ff9b8f}
+
+/* Big captions such as jjok · ppeok · go */
+.gs-banner{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; z-index:7}
+.gs-banner b{font-size:38px; font-weight:900; color:#fff; text-align:center; padding:0 12px; text-shadow:0 3px 0 rgba(0,0,0,.35), 0 0 24px rgba(0,0,0,.65); animation:gsPop 1.5s ease forwards}
+.gs-banner b.good{color:var(--gold2)}
+.gs-banner b.bad{color:#ff9b8f}
+.gs-banner b.go{color:#ffd28a; font-size:46px}
+@keyframes gsPop{0%{transform:scale(.4); opacity:0} 15%{transform:scale(1.12); opacity:1} 25%{transform:scale(1)} 80%{opacity:1} 100%{opacity:0; transform:translateY(-14px)}}
+
+/* ---------- Round result ---------- */
+.gs-over{position:absolute; top:8px; left:8px; right:8px; max-height:calc(100% - 16px); z-index:20; overflow-y:auto; padding:14px 14px 10px; border-radius:16px; background:rgba(12,22,17,.97); border:1px solid var(--line2);
+  box-shadow:0 20px 60px rgba(0,0,0,.7); animation:fade .25s}
+.gs-over h3{margin:2px 0 8px; font-size:20px; line-height:1.3}
+.gs-over h3 small{font-size:12px; color:var(--muted); font-weight:400}
+.gs-over p{margin:5px 0; font-size:13.5px; color:var(--muted)}
+.gs-over p b{color:var(--ink)}
+.gs-items{display:flex; flex-wrap:wrap; gap:4px}
+.gs-items span{font-size:12.5px; padding:1px 7px; border-radius:6px; background:rgba(230,195,106,.14); border:1px solid rgba(230,195,106,.35)}
+.gs-items b{color:var(--gold2)}
+.gs-over p.gs-calc b{color:var(--gold2); font-size:16px}
+.gs-pay{width:100%; border-collapse:collapse; margin:6px 0; font-size:13.5px}
+.gs-pay td{padding:6px 2px; border-bottom:1px solid var(--line); vertical-align:middle}
+.gs-pay td:first-child{white-space:nowrap; padding-right:8px}
+.gs-pay td.pay{text-align:right; font-weight:800; color:#ff9b8f; white-space:nowrap}
+.gs-pcalc{display:block; font-size:11px; font-weight:400; color:var(--muted)}
+.gs-mul{display:inline-block; font-size:11.5px; padding:0 5px; margin:1px 3px 1px 0; border-radius:5px; background:rgba(217,83,79,.22); color:#ffbdb3}
+.gs-totals{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:8px; padding-top:6px; border-top:1px solid var(--line); font-size:13.5px}
+.gs-totals span.me{color:var(--gold2)}
+.gs-totals small{color:var(--muted); margin-left:3px}
+.gs-ofoot{display:flex; align-items:center; justify-content:space-between; margin-top:10px}
+.gs-ofoot small{color:var(--muted)}
+.gs-rcards{display:flex; gap:6px; justify-content:center; margin:6px 0}
+
+/* ---------- Hint + hand ---------- */
+.gs-dock{flex:0 0 auto; margin:0 -6px; padding:3px 6px 6px; background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.45)); border-top:1px solid var(--line)}
+.gs-hint{font-size:12.5px; line-height:16px; height:32px; color:var(--muted); text-align:center; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:0 4px}
+.gs-hint > span{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.gs-hint b{color:var(--gold2)}
+.gs-hint b.gold{color:var(--gold2)} .gs-hint b.block{color:#9cc8ff} .gs-hint b.bad{color:#ff9b8f}
+.gs-hand{display:flex; flex-wrap:wrap; gap:5px; justify-content:center; align-content:flex-start; margin:7px auto 0}
+.gs-hand > .gs-nohand{flex:1 1 100%}
+.gs-hc{width:var(--hw,52px); position:relative; padding:0; border:0; background:none; border-radius:8px; display:flex; flex-direction:column; align-items:center; gap:0}
+.gs-hc .hw{--cw:var(--hw,52px); --ch:calc(var(--hw,52px) * 1.55); transition:transform .12s, box-shadow .12s}
+.gs-hc.nm .hw{filter:saturate(.75) brightness(.88)}
+.gs-ht{display:block; width:100%; height:14px; margin-top:0; font-size:10px; line-height:14px; font-weight:800; text-align:center; color:#a6f5c5; white-space:nowrap; overflow:hidden; letter-spacing:-.03em}
+.gs-ht.good{color:#8ff0b4}
+.gs-ht.gold{color:#1d1503; background:var(--gold2); border-radius:4px}
+.gs-ht.block{color:#08213f; background:#9cc8ff; border-radius:4px}
+.gs-ht.bad{color:#ffb3a8}
+.gs-ht.bomb{color:#fff; background:var(--red); border-radius:4px}
+.gs-sb{position:absolute; top:-6px; right:-4px; z-index:3; font-size:10px; font-weight:800; padding:0 4px; border-radius:6px; background:var(--red); color:#fff; line-height:15px; pointer-events:none}
+.gs-fl{position:absolute; left:0; right:0; top:0; height:calc(var(--hw,52px) * 1.55); display:grid; place-items:center; text-align:center; font-size:12px; font-weight:800; color:#fff; text-shadow:0 1px 2px #000; line-height:1.25; pointer-events:none}
+.gs-nohand{text-align:center; padding:14px 0; font-size:12.5px}
+
+/* Go/Stop dialog (.gs-gsm) · captured-cards dialog (.gs-capm) */
+.gs-golist{margin:4px 0 0; padding-left:18px; font-size:13.5px; color:var(--muted); line-height:1.6}
+.gs-golist b{color:var(--ink)}
+.gs-mg{margin-top:10px}
+.gs-mgh{font-size:13px; color:var(--muted); margin-bottom:4px}
+.gs-mgh b{color:var(--gold2)}
+.gs-mgc{display:flex; flex-wrap:wrap; gap:4px}
+
+/* Small screens */
+.gs.short .gs-hint{height:30px; font-size:12px; line-height:15px}
+.gs.short .gs-ph{height:21px}
+
+/* ---------- Spectators (.spec: watching screens, public replays) — no dock; seat 0 sits in my panel's place ---------- */
+.gs.spec{padding-bottom:6px}
+.gs.spec .gs-mine{background:rgba(0,0,0,.32)}
+.gs.spec .gs-mine.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 12px rgba(230,195,106,.28)}
+
+/* ---------- Landscape: phones held sideways, tablets, computers, TVs ----------
+   Left: every panel in a column (ui.js adds the captured cards when they fit) · right: the felt, then the hint + my hand */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .gs{flex-direction:row; max-width:1700px; gap:6px; padding:4px 6px 5px}
+  .gs-side{display:flex; flex-direction:column; gap:4px; flex:0 0 clamp(300px, 35%, 440px); min-width:0; min-height:0; overflow-x:hidden; overflow-y:auto; scrollbar-width:none}
+  .gs-side::-webkit-scrollbar{display:none}
+  .gs-main{display:flex; flex-direction:column; gap:4px; flex:1 1 0; min-width:0; min-height:0}
+  .gs.spec .gs-mine{order:0}
+  .gs.spec .gs-side{flex-basis:clamp(300px, 35%, 500px)}
+  .gs-p{zoom:var(--pz,1)}                 /* ui.js scales the panels up when the column has room (computers, TVs) */
+  .gs-ti small{letter-spacing:-.03em}
+  /* Long hand on a small sideways phone: a narrower panel column with the tiles in two rows (ui.js tries it first) */
+  .gs.narrow .gs-side{flex-basis:216px}
+  .gs.narrow .gs-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .gs-table{min-height:110px}
+  .gs.roomy .gs-banner b{font-size:56px}
+  .gs.roomy .gs-banner b.go{font-size:68px}
+  .gs-dock{margin:0; padding:2px 6px 5px; border:1px solid var(--line); border-radius:12px}
+  .gs-over{left:max(8px, calc(50% - 290px)); right:max(8px, calc(50% - 290px))}
+  /* Phones held sideways: a tighter round result so it fits without scrolling */
+  .gs.short .gs-over{top:4px; max-height:calc(100% - 8px); padding:8px 12px; columns:2; column-gap:20px; column-rule:1px solid var(--line)}
+  .gs.short .gs-over > *{break-inside:avoid}
+  .gs.short .gs-over h3{margin:0 0 4px; font-size:18px}
+  .gs.short .gs-over p{margin:3px 0}
+  .gs.short .gs-pay{margin:2px 0}
+  .gs.short .gs-pay td{padding:3px 2px}
+  .gs.short .gs-totals{margin-top:4px; padding-top:4px}
+  .gs.short .gs-ofoot{margin-top:4px}
+  .modal.gs-capm{max-width:min(900px, calc(96vw / var(--zoom)))}
+  .gs-capm .gs-mgs{display:grid; grid-template-columns:1fr 1fr; gap:0 16px}
+  .modal.gs-gsm{max-width:min(700px, calc(96vw / var(--zoom))); padding-top:14px; padding-bottom:12px}
+  .gs-gsm .gs-golist{line-height:1.45}
+}
+
+/* ---------- Hwatu cards ----------
+   Size via --cw/--ch; text scales with the card width (font-size). Top strip: month number (left) + kind mark (right) — visible when stacked.
+   --hs is the card's own shadow (a design may draw its frame with it); state rings (sel · can · pick · cur · opt) are drawn on top of it,
+   so they work with every face design. --kc: the kind colour (bottom strip of the small captured cards). */
+.hw{--cw:40px; --ch:62px; --mc:#333; --mb:#f3ead5; --hs:0 2px 5px rgba(0,0,0,.45); --kc:#cfc4ab; width:var(--cw); height:var(--ch); position:relative; flex:0 0 auto; overflow:hidden; display:block;
+  border-radius:calc(var(--cw) * .12); font-size:calc(var(--cw) * .25); line-height:1; color:#2a2418; font-weight:700;
+  background:linear-gradient(180deg,#fffcf3 0%,var(--mb) 100%); border:1px solid #b6a27a; box-shadow:var(--hs);
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+.hw-n{position:absolute; top:.2em; left:.25em; font-size:1.35em; font-weight:900; color:var(--mc); letter-spacing:-.05em}
+.hw-k{position:absolute; top:.22em; right:.2em; min-width:1.3em; height:1.3em; padding:0 .15em; border-radius:.65em; display:grid; place-items:center; font-size:.8em; font-weight:900; line-height:1}
+.hw-k:empty{display:none}
+.hw-art{position:absolute; left:0; right:0; top:33%; text-align:center; font-size:1.75em; line-height:1}
+.hw-l{position:absolute; left:.2em; right:.2em; bottom:.22em; text-align:center; font-size:.8em; font-weight:800; line-height:1.45; border-radius:.3em; color:#7a705c; white-space:nowrap; overflow:hidden}
+.hw.m1,.gs-tk.m1{--mc:#1e6b3a; --mb:#dcefe0}
+.hw.m2,.gs-tk.m2{--mc:#b3123d; --mb:#f9dde3}
+.hw.m3,.gs-tk.m3{--mc:#e0569a; --mb:#fde7f2}
+.hw.m4,.gs-tk.m4{--mc:#2b2b2b; --mb:#e4e4dc}
+.hw.m5,.gs-tk.m5{--mc:#4a63b0; --mb:#e3e8f7}
+.hw.m6,.gs-tk.m6{--mc:#a01f75; --mb:#f5e0ee}
+.hw.m7,.gs-tk.m7{--mc:#b8401d; --mb:#fbe5da}
+.hw.m8,.gs-tk.m8{--mc:#6e5a22; --mb:#efe7cf}
+.hw.m9,.gs-tk.m9{--mc:#a77c00; --mb:#fbf0c8}
+.hw.m10,.gs-tk.m10{--mc:#c62d12; --mb:#fde0d4}
+.hw.m11,.gs-tk.m11{--mc:#2c6e5b; --mb:#dceee7}
+.hw.m12,.gs-tk.m12{--mc:#2c4f8c; --mb:#dfe6f3}
+.hw.m2 .hw-art{filter:hue-rotate(-30deg) saturate(1.8)}          /* plum (Feb) redder than cherry */
+/* Gwang */
+.hw.k-g{border:2px solid #c9961a; --kc:#d39e17}
+.hw.k-g .hw-k{background:radial-gradient(circle at 35% 30%,#fff1b0,#e0a91c 70%); color:#5a3600; box-shadow:0 0 0 1px #9b6f00}
+.hw.k-g .hw-l{background:#d39e17; color:#fff}
+/* Ribbons: ribbon top-right + name strip at the bottom */
+.hw.k-hong{--rb:#d42a2a; --kc:#d42a2a} .hw.k-cheong{--rb:#245fc4; --kc:#245fc4} .hw.k-cho{--rb:#e66a52; --kc:#e66a52} .hw.k-rain{--rb:#8f3a3a; --kc:#8f3a3a}
+.hw.k-hong::after,.hw.k-cheong::after,.hw.k-cho::after,.hw.k-rain::after{content:""; position:absolute; top:.25em; right:.4em; width:.6em; height:1.45em; background:var(--rb);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%)}
+.hw.k-hong .hw-l,.hw.k-cheong .hw-l,.hw.k-cho .hw-l,.hw.k-rain .hw-l{background:var(--rb); color:#fff}
+/* Animals · godori · gukjin */
+.hw.k-y .hw-k{background:#4f7a2a; color:#fff}
+.hw.k-go .hw-k{background:#fff; box-shadow:0 0 0 1px #4f7a2a; font-size:.72em}
+.hw.k-guk .hw-k{background:#a77c00; color:#fff}
+.hw.k-y .hw-l,.hw.k-go .hw-l,.hw.k-guk .hw-l{background:#557f2c; color:#fff}
+.hw.k-guk .hw-l{background:linear-gradient(90deg,#557f2c 50%,#3a3a3a 50%)}
+.hw.k-y,.hw.k-go{--kc:#557f2c} .hw.k-guk{--kc:linear-gradient(90deg,#557f2c 50%,#3a3a3a 50%)}
+/* Double pi · bonus */
+.hw.k-pp .hw-k{background:#2b2b2b; color:#fff}
+.hw.k-pp .hw-l{background:#3a3a3a; color:#fff}
+.hw.k-pp{--kc:#3a3a3a}
+.hw.bonus{--mb:#f0dcff; --mc:#7a3fc0; --kc:#8c4fd0; border:2px solid #8c4fd0}
+.hw.bonus .hw-k{background:#8c4fd0; color:#fff}
+.hw.bonus .hw-l{background:#8c4fd0; color:#fff}
+/* Back */
+.hw.back{background:repeating-linear-gradient(45deg,#b51f2b 0 4px,#951722 4px 8px); border:2px solid #f0d9a0}
+.hw.back i{position:absolute; inset:24% 16%; border-radius:50%; border:2px solid rgba(240,217,160,.55)}
+/* Sizes */
+.hw.sm{--cw:26px; --ch:40px; border-radius:4px}
+.hw.md{--cw:36px; --ch:56px}
+.hw.lg{--cw:58px; --ch:90px}
+.hw.mini{--cw:20px; --ch:31px; --hs:0 1px 2px rgba(0,0,0,.5); border-radius:3px; border-width:1px}
+.hw.sm .hw-k,.hw.mini .hw-k,.hw.mini .hw-art,.hw.mini::after{display:none}
+.hw.sm .hw-l,.hw.mini .hw-l{left:0; right:0; bottom:0; height:4px; font-size:0; border-radius:0; padding:0}
+.hw.mini .hw-n{left:0; right:0; top:.3em; text-align:center; font-size:2em}
+.hw.mini.k-pp .hw-k,.hw.mini.bonus .hw-k{display:grid; top:auto; bottom:5px; right:1px; font-size:8px; min-width:9px; height:9px; padding:0 1px}
+.hw.mini.k-g .hw-n{color:#9b6f00}
+/* States (rings on top of the design's own shadow --hs) */
+.hw.sel{transform:translateY(-8px); box-shadow:0 0 0 3px var(--gold2), 0 10px 18px rgba(0,0,0,.55), var(--hs)}
+.hw.can{box-shadow:0 0 0 2px rgba(92,196,137,.95), var(--hs)}
+.hw.sel.can{box-shadow:0 0 0 3px var(--gold2), 0 10px 18px rgba(0,0,0,.55), var(--hs)}
+.gs-floor .hw.can{box-shadow:0 0 0 3px var(--gold2), 0 0 16px rgba(245,220,148,.85), var(--hs)}
+.hw.pick{box-shadow:0 0 0 3px #7fe0a6, 0 0 18px rgba(127,224,166,.9), var(--hs); animation:gsPulse .9s ease-in-out infinite alternate}
+.hw.cur{box-shadow:0 0 0 2px #fff, 0 2px 8px rgba(0,0,0,.5), var(--hs)}
+/* Someone else is choosing between these two floor cards (spectators, replays, other players) */
+.gs-floor .hw.opt{box-shadow:0 0 0 2px #7fe0a6, 0 0 12px rgba(127,224,166,.6), var(--hs)}
+@keyframes gsPulse{to{box-shadow:0 0 0 3px #7fe0a6, 0 0 4px rgba(127,224,166,.4), var(--hs)}}
+
+/* ---------- Hwatu face designs (cards.js adds hd-<design>; chosen in the settings) ----------
+   Designs set colours, type and the frame shadow (--hs, never box-shadow itself: the state rings above must stay visible).
+   The small captured cards (.mini) keep their kind strip and a centred month number in every design (rules at the very end). */
+/* Traditional: a black card with a red inner frame like real hwatu, white art panel, the month in a red seal, 光 on gwang */
+.hw.hd-trad:not(.back){background:#fffaf0; border:none;
+  --hs:inset 0 0 0 calc(var(--cw) * .06) #1d1d1d, inset 0 0 0 calc(var(--cw) * .09) #c0272d, 0 2px 5px rgba(0,0,0,.5)}
+.hw.hd-trad .hw-n{top:.32em; left:.32em; width:1.25em; height:1.25em; border-radius:.2em; display:grid; place-items:center; font-size:1.05em; color:#fff; background:#c0272d}
+.hw.hd-trad.k-g .hw-k{color:transparent; background:#c0272d; box-shadow:none}
+.hw.hd-trad.k-g .hw-k::before{content:"\5149"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-size:1.05em; font-weight:900}
+.hw.hd-trad .hw-l{background:#1d1d1d; color:#f5e6c8; left:.32em; right:.32em; bottom:.32em}
+.hw.hd-trad.k-g .hw-l{background:#c0272d}
+.hw.hd-trad .hw-art{filter:saturate(1.3) contrast(1.1)}
+/* Night: a dark card, the month colour as a glowing edge */
+.hw.hd-night:not(.back){background:linear-gradient(180deg,#1b2233,#0e1320); border:1.5px solid var(--mc); color:#e8ecf5;
+  --hs:0 0 6px color-mix(in srgb, var(--mc) 60%, transparent), 0 2px 5px rgba(0,0,0,.5)}
+.hw.hd-night .hw-n{color:color-mix(in srgb, var(--mc) 60%, #fff); text-shadow:0 0 6px var(--mc)}
+.hw.hd-night .hw-art{filter:drop-shadow(0 0 4px rgba(255,255,255,.35))}
+.hw.hd-night .hw-l{color:#cfd6e6}
+.hw.hd-night.k-p .hw-l{background:rgba(255,255,255,.08)}
+/* Big month: the month number is the face; the picture shrinks to a corner */
+.hw.hd-big:not(.mini):not(.sm):not(.back) .hw-n{top:20%; left:0; right:0; text-align:center; font-size:2.6em; letter-spacing:-.06em}
+.hw.hd-big:not(.mini):not(.sm):not(.back) .hw-art{top:auto; bottom:1.35em; left:auto; right:.12em; width:auto; font-size:.95em}
+.hw.hd-big:not(.mini):not(.sm):not(.back) .hw-k{top:.2em}
+/* Flat: one solid month colour, white type, no paper texture */
+.hw.hd-flat:not(.back){background:var(--mc); border:none; color:#fff; --hs:0 2px 4px rgba(0,0,0,.45)}
+.hw.hd-flat .hw-n{color:#fff}
+.hw.hd-flat .hw-l{color:#fff; background:rgba(0,0,0,.22)}
+.hw.hd-flat.k-p .hw-l{background:rgba(255,255,255,.15)}
+.hw.hd-flat .hw-art{filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.hw.hd-flat .hw-k{box-shadow:0 0 0 1px rgba(255,255,255,.85)}     /* marks stay visible on any month colour (gukjin on September) */
+
+/* Small captured cards in every design: centred month number, kind strip at the bottom */
+.hw.mini.mini .hw-n{left:0; right:0; top:.3em; width:auto; height:auto; display:block; text-align:center; font-size:2em; background:none; border-radius:0}
+.hw.mini.mini .hw-l{left:0; right:0; bottom:0; height:4px; border-radius:0; background:var(--kc)}
+.hw.hd-trad.mini .hw-n{color:#c0272d}
+.hw.hd-trad.mini.k-g .hw-n{color:#9b6f00}
+.hw.hd-night.mini.k-g .hw-n{color:#ffd75e; text-shadow:none}
+.hw.hd-flat.mini.k-g .hw-n{color:#ffe08a}
+.hw.hd-flat.mini .hw-l{box-shadow:0 -1px 0 rgba(255,255,255,.65)}

@@ -1,0 +1,269 @@
+/* Liar's Dice. --s (0…1, set by ui.js) grows dice and text when there is spare height. Component classes (.ld-die, .ld-chip)
+   don't depend on .ld, because ctx.fly() copies them into <body>. */
+.ld{height:100%; display:flex; flex-direction:column; position:relative; --s:0;
+  --mds:calc(34px + 20px * var(--s)); --fds:calc(21px + 9px * var(--s)); --bds:calc(38px + 30px * var(--s)); --cup:calc(26px + 10px * var(--s)); --rds:28px}
+
+/* ---------- Dice drawn with CSS pips ---------- */
+.ld-die{--d:var(--ds,22px); width:var(--d); height:var(--d); flex:0 0 auto; display:inline-grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+  padding:calc(var(--d) * .13); border-radius:calc(var(--d) * .2); vertical-align:middle; box-sizing:border-box;
+  background:linear-gradient(145deg,#fffef8 0%,#f1eadb 62%,#d8cdb4 100%);
+  box-shadow:inset 0 calc(var(--d) * -.06) 0 rgba(0,0,0,.13), 0 2px 5px rgba(0,0,0,.35); transition:transform .2s, box-shadow .2s, opacity .25s}
+.ld-die i{width:calc(var(--d) * .2); height:calc(var(--d) * .2); border-radius:50%; background:#211b16; place-self:center; box-shadow:inset 0 1px 1px rgba(0,0,0,.6)}
+.ld-die .k1{grid-area:1/1} .ld-die .k3{grid-area:1/3} .ld-die .k4{grid-area:2/1} .ld-die .k5{grid-area:2/2}
+.ld-die .k6{grid-area:2/3} .ld-die .k7{grid-area:3/1} .ld-die .k9{grid-area:3/3}
+.ld-die.f1 i{width:calc(var(--d) * .34); height:calc(var(--d) * .34); background:radial-gradient(circle at 35% 35%,#f0645a,#b8221b)}
+.ld-die.w{background:linear-gradient(145deg,#fff8dc 0%,#f6e3a4 62%,#dcbf6a 100%)}           /* wild ones */
+.ld-die.hit{box-shadow:0 0 0 2px var(--gold2), 0 0 12px rgba(245,220,148,.75); transform:translateY(-2px)}
+.ld-die.dead{filter:grayscale(1) brightness(.7); opacity:.75}
+.ld-chip{--ds:18px; display:inline-flex; align-items:center; gap:2px; padding:2px 4px 2px 7px; border-radius:999px; white-space:nowrap;
+  background:rgba(0,0,0,.42); border:1px solid rgba(230,195,106,.45); font-weight:900; line-height:1; color:#f6f0e0}
+.ld-chip b{font-size:calc(var(--ds) * .82); font-variant-numeric:tabular-nums}
+.ld-chip em{font-style:normal; font-size:calc(var(--ds) * .55); color:var(--muted); margin:0 1px}
+.ld-chip.sm{--ds:15px; padding:1px 3px 1px 5px}
+.ld-chip.sm.top{border-color:var(--gold2); box-shadow:0 0 8px rgba(245,220,148,.45)}
+.ld-chip.big{--ds:var(--bds); gap:6px; padding:6px 8px 6px 16px; border-width:2px; border-color:var(--gold);
+  background:radial-gradient(circle at 30% 20%,rgba(255,236,170,.2),rgba(0,0,0,.5)); box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.ld-chip.big.empty{padding:6px 18px; color:rgba(255,255,255,.5); border-style:dashed}
+.ld-chip.big.empty b{font-size:calc(var(--bds) * .8)}
+
+/* ---------- Opponents ---------- */
+.ld-opps{flex:0 0 auto; display:flex; gap:4px; padding:10px 6px 3px; justify-content:center}
+.ld-opp{flex:1 1 0; min-width:0; max-width:150px; position:relative; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:6px 3px 4px; border-radius:12px; background:rgba(0,0,0,.32); border:1px solid var(--line)}
+.ld-oname{display:flex; align-items:center; gap:4px; max-width:100%; font-size:11.5px; font-weight:700; line-height:1.2}
+.ld-oname span{min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-oname .av.sm{width:20px; height:20px; font-size:10px}
+.ld-cupline{display:flex; align-items:center; gap:4px}
+.ld-cup{width:var(--cup); height:calc(var(--cup) * .9); display:grid; place-items:center; clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg,transparent 80%,#c79566 80%), linear-gradient(90deg,#3b2213,#94613b 40%,#6c4125 72%,#3b2213)}
+.ld-cup b{margin-top:calc(var(--cup) * .08); font-size:calc(var(--cup) * .5); font-weight:900; color:#ffeccc; text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.ld-dots{display:flex; flex-direction:column; gap:2px}
+.ld-dots i{width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.14)}
+.ld-dots i.on{background:var(--gold2)}
+.ld-act{min-height:19px; display:flex; align-items:center}
+.ld-delta{font-style:normal; font-size:11px; font-weight:900; line-height:1; padding:2px 3px; border-radius:5px}
+.ld-delta.neg{color:#ff9b8f; background:rgba(120,20,15,.5)}
+.ld-delta.pos{color:#8fe0b0; background:rgba(20,90,50,.5)}
+.ld-mlab .ld-delta{margin-left:3px; font-size:10px; vertical-align:middle}
+.ld-place{font-size:11px; font-weight:800; color:#ff9b8f; padding:6px 0}
+.ld-ai{position:absolute; top:3px; left:3px; font-size:8px; font-weight:700; line-height:1.3; padding:0 2px; border-radius:3px; border:1px solid var(--line2); color:var(--muted); background:rgba(0,0,0,.35)}
+.ld-ai.away{color:#ff9b8f; border-color:rgba(255,155,143,.5)}
+.ld-tag{position:absolute; top:-8px; left:50%; transform:translateX(-50%); z-index:1; font-style:normal; font-size:9.5px; font-weight:800; line-height:1.4;
+  padding:0 6px; border-radius:5px; white-space:nowrap}
+.ld-tag.now{background:var(--gold); color:#1d1406}
+.ld-tag.win{background:var(--gold); color:#1d1406; font-size:11px}
+.ld-opp.turn{border-color:var(--gold); background:rgba(230,195,106,.14); box-shadow:0 0 0 1px var(--gold), 0 0 16px rgba(230,195,106,.4)}
+.ld-opp.turn .ld-cup{animation:ldThink 1.4s ease-in-out infinite}
+.ld-opp.out{opacity:.5; border-style:dashed}
+.ld-opp.win{border-color:var(--gold); background:rgba(230,195,106,.2)}
+.ld-opps.roll .ld-cup{animation:ldShake .55s ease}
+.ld-opps.many .ld-opp{padding:6px 1px 3px}
+.ld-opps.many .ld-oname{font-size:10px}
+.ld-opps.many .ld-oname .av.sm{width:17px; height:17px; font-size:9px}
+.ld-opps.many .ld-ai:not(.away){display:none}
+.ld-opps.many .ld-chip.sm{--ds:13px}
+.ld-opps.many .ld-dots{display:none}
+.ld-opps.many .ld-act{min-height:17px}
+.ld-opps.many{--cup:calc(24px + 10px * var(--s))}
+@keyframes ldThink{50%{transform:rotate(-6deg)}}
+@keyframes ldShake{20%{transform:translateX(-3px) rotate(-8deg)} 40%{transform:translateX(3px) rotate(7deg)} 60%{transform:translateX(-2px) rotate(-5deg)} 80%{transform:translateX(2px)}}
+
+/* ---------- Felt ---------- */
+.ld-table{flex:1 1 auto; min-height:0; margin:3px 8px 6px; border-radius:18px; position:relative; overflow:hidden; display:flex; flex-direction:column;
+  padding:6px 10px 8px; gap:4px; box-shadow:inset 0 0 0 2px rgba(230,195,106,.25), inset 0 10px 40px rgba(0,0,0,.4)}
+.ld-top{flex:0 0 auto; display:flex; align-items:center; gap:10px; font-size:12px; color:rgba(255,255,255,.75); white-space:nowrap; min-height:22px}
+.ld-top b{color:#fff; font-size:13.5px}
+.ld-round{font-weight:800; color:var(--gold2)}
+.ld-wild{display:inline-flex; align-items:center; gap:3px; --ds:15px}
+.ld-grave{margin-left:auto; display:inline-flex; align-items:center; gap:3px; --ds:14px}
+.ld-grave b{font-size:12px; color:rgba(255,255,255,.7)}
+.ld-mid{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:6px}
+.ld-cur{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center}
+.ld-big{display:flex; align-items:center; justify-content:center; gap:10px; max-width:100%}
+.ld-bt{min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:3px; text-align:left}
+.ld-by{display:flex; align-items:center; gap:5px; font-size:12.5px; color:rgba(255,255,255,.8); max-width:100%}
+.ld-by:empty{display:none}
+.ld-by span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-say{font-size:calc(15px + 5px * var(--s)); font-weight:800; color:#f6f0e0; white-space:nowrap}
+.ld-odds{width:min(100%,330px); display:flex; flex-direction:column; align-items:center; gap:2px; font-size:12.5px; color:rgba(255,255,255,.85)}
+.ld-odds b{font-size:calc(15px + 4px * var(--s)); color:hsl(var(--h),70%,62%)}
+.ld-bar{width:100%; height:7px; border-radius:99px; background:rgba(0,0,0,.4); overflow:hidden}
+.ld-bar i{display:block; height:100%; border-radius:99px; background:hsl(var(--h),65%,50%); transition:width .3s}
+.ld-need{font-size:11.5px; color:rgba(255,255,255,.65); line-height:1.35; word-break:keep-all}
+.ld-need b{color:#fff}
+.ld-ladder{flex:0 0 auto; display:flex; flex-direction:column; gap:2px; width:min(100%,360px); align-self:center}
+.ld-dock .ld-ladder{width:100%; align-self:stretch}
+.ld-lh{display:flex; align-items:center; justify-content:center; gap:5px; font-size:11px; color:rgba(255,255,255,.6); height:20px; --ds:15px}
+.ld-lr{display:flex; align-items:center; gap:6px; height:var(--lrh,22px); padding:0 8px; border:1px solid transparent; border-radius:8px; background:rgba(0,0,0,.18);
+  font-size:12px; color:#f4f1e6; text-align:left}
+.ld-lr .k{flex:0 0 3.2em; font-weight:800; font-variant-numeric:tabular-nums}
+.ld-lr .ld-bar{flex:1 1 auto; height:6px}
+.ld-lr b{flex:0 0 3.6em; text-align:right; font-size:12px; color:hsl(var(--h),70%,64%)}
+.ld-lr.low{opacity:.4}
+.ld-lr.cur{border-color:rgba(255,255,255,.35)}
+.ld-lr.sel{border-color:var(--gold); background:rgba(230,195,106,.16)}
+.ld-lr:disabled{cursor:default}
+.ld-hist{flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; gap:2px; scrollbar-width:thin}
+.ld-h{flex:0 0 auto; display:flex; align-items:center; gap:5px; min-height:24px; padding:1px 6px; border-radius:8px; font-size:12px; color:rgba(244,241,230,.6)}
+.ld-h .av.sm{width:18px; height:18px; font-size:9px}
+.ld-h .nm{min-width:0; max-width:30%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:700}
+.ld-h .say{flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-h .pp{flex:0 0 auto; font-size:11px; font-weight:800; color:hsl(var(--h),60%,62%); opacity:.85}
+.ld-h.top{background:rgba(0,0,0,.25); color:#f4f1e6}
+.ld-h.none{justify-content:center; color:rgba(255,255,255,.5)}
+.ld-h.prev{justify-content:center; flex-wrap:wrap; font-size:11.5px; color:rgba(255,255,255,.55); border-top:1px dashed rgba(255,255,255,.15); border-radius:0; margin-top:2px; padding-top:4px; word-break:keep-all}
+.ld-h.prev b{color:var(--gold2)}
+
+/* ---------- Dock: my dice · picker ---------- */
+.ld-dock{padding:6px 8px calc(8px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:5px}
+.ld-mine{display:flex; align-items:center; justify-content:center; gap:8px; min-height:var(--mds)}
+.ld-mlab{display:flex; flex-direction:column; align-items:center; font-size:10.5px; color:var(--muted); line-height:1.15}
+.ld-mlab b{font-size:17px; color:var(--ink)}
+.ld-mdice{display:flex; gap:calc(5px + 3px * var(--s)); --ds:var(--mds)}
+.ld-mdice.roll .ld-die{animation:ldRoll .6s cubic-bezier(.2,.9,.3,1.2) backwards}
+.ld-mdice.roll .ld-die:nth-child(2){animation-delay:.05s} .ld-mdice.roll .ld-die:nth-child(3){animation-delay:.1s}
+.ld-mdice.roll .ld-die:nth-child(4){animation-delay:.15s} .ld-mdice.roll .ld-die:nth-child(5){animation-delay:.2s}
+@keyframes ldRoll{0%{transform:translateY(-18px) rotate(-220deg) scale(.4); opacity:0} 100%{transform:none; opacity:1}}
+.ld-mk{display:flex; align-items:center; gap:3px; padding:2px 7px 2px 3px; border-radius:99px; background:rgba(230,195,106,.14); border:1px solid rgba(230,195,106,.45); --ds:18px}
+.ld-mk b{font-size:15px; color:var(--gold2)}
+.ld-outme{font-size:14px; font-weight:700; color:#ff9b8f; padding:6px 0}
+.ld-dock .hint{margin:0; font-size:12.5px; line-height:1.35; word-break:keep-all}
+.ld-pick{display:flex; flex-direction:column; gap:5px}
+.ld.short .ld-cap{display:none}
+.ld.short .ld-opps{padding-top:9px}
+.ld.short .ld-face{min-height:44px}
+.ld.short .ld-row .btn, .ld.short .ld-step button{min-height:44px}
+.ld-cap{display:flex; justify-content:space-between; gap:6px; font-size:10.5px; color:var(--faint); padding:0 2px; white-space:nowrap; overflow:hidden}
+.ld-faces{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:4px}
+.ld-face{min-height:calc(46px + 10px * var(--s)); border-radius:10px; border:1px solid var(--line2); background:rgba(255,255,255,.05); padding:3px 0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; --ds:var(--fds)}
+.ld-face small{font-size:11px; color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1}
+.ld-face.sel{border-color:var(--gold); background:rgba(230,195,106,.18); box-shadow:0 0 0 1px var(--gold)}
+.ld-face.sel small{color:var(--gold2)}
+.ld-face:disabled{opacity:.28}
+.ld-row{display:flex; gap:6px}
+.ld-step{flex:0 0 auto; display:flex; align-items:center; border-radius:11px; border:1px solid var(--line2); background:rgba(0,0,0,.25)}
+.ld-step button{width:40px; min-height:46px; border:0; background:none; font-size:22px; font-weight:900; color:var(--ink)}
+.ld-step button:disabled{opacity:.25}
+.ld-step b{min-width:38px; text-align:center; font-size:20px; font-variant-numeric:tabular-nums}
+.ld-step b small{font-size:11px; color:var(--muted); margin-left:1px}
+.ld-row .btn{min-height:46px; padding:4px 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.2}
+.ld-row .btn small{font-size:11px; font-weight:600}
+.ld-go{flex:1 1 auto; min-width:0}
+.ld-go span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.ld-go small i{font-style:normal; font-weight:800}
+.ld-liar{flex:1 1 0; color:#ffb0a6; border-color:rgba(255,155,143,.55); background:rgba(120,30,25,.35)}
+.ld-spot{flex:1 1 0; color:#a9d4ff; border-color:rgba(130,180,255,.5); background:rgba(30,60,120,.3)}
+.ld-liar small, .ld-spot small{opacity:.85}
+.ld-liar.armed{background:linear-gradient(180deg,#d9534f,#a93a36); color:#fff; border-color:#ffb0a6; animation:ldPulse .5s ease-in-out infinite alternate}
+.ld-spot.armed{background:linear-gradient(180deg,#4f8fd9,#2f63a8); color:#fff; animation:ldPulse .5s ease-in-out infinite alternate}
+@keyframes ldPulse{to{transform:scale(1.03)}}
+
+/* ---------- Reveal overlay ---------- */
+.ld-rv{position:absolute; inset:0; z-index:6; display:flex; align-items:center; justify-content:center; padding:8px; overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,rgba(18,40,28,.94),rgba(4,10,7,.96))}
+.ld-rvbox{width:100%; max-width:560px; max-height:100%; display:flex; flex-direction:column; gap:calc(5px + 4px * var(--s))}
+.ld-shout{align-self:center; display:flex; align-items:center; gap:8px; font-size:calc(20px + 8px * var(--s)); font-weight:900; line-height:1.15}
+.ld-shout b{max-width:9em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-shout span{color:#ff8f80; text-shadow:0 0 18px rgba(255,100,80,.5)}
+.ld-rv.anim .ld-shout{animation:ldShout .55s cubic-bezier(.2,1.6,.4,1)}
+@keyframes ldShout{from{transform:scale(2.2); opacity:0}}
+.ld-rvbid{align-self:center; display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,.8); max-width:100%}
+.ld-rvbid > span:first-child{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-rvbid .ld-chip{--ds:22px}
+.ld-rvbid .say{font-weight:800; color:#fff; white-space:nowrap}
+.ld-rvrows{display:grid; gap:4px; --ds:var(--rds)}
+.ld-rvrows.two{grid-template-columns:1fr 1fr}
+.ld-rr{display:flex; align-items:center; gap:6px; padding:4px 6px; border-radius:10px; background:rgba(255,255,255,.04); border:1px solid var(--line); min-width:0}
+.ld-rn{flex:0 0 calc(84px + 30px * var(--s)); min-width:0; position:relative; display:flex; align-items:center; gap:4px; font-size:calc(12px + 3px * var(--s)); font-weight:700}
+.ld-rn > span{min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ld-rn .av.sm{width:20px; height:20px; font-size:10px}
+.ld-role{position:absolute; left:0; top:-11px; font-style:normal; font-size:8.5px; font-weight:800; line-height:1.3; padding:0 4px; border-radius:4px}
+.ld-role.c{background:#d9534f; color:#fff}
+.ld-role.b{background:var(--gold); color:#1d1406}
+.ld-rd{flex:1 1 auto; min-width:0; position:relative; display:flex; flex-wrap:wrap; align-items:center; gap:4px; min-height:var(--rds)}
+.ld-rk{flex:0 0 auto; min-width:20px; text-align:right; font-size:16px; color:var(--gold2); opacity:0; transition:opacity .3s}
+.ld-rv.done .ld-rk{opacity:1}
+/* Cups lift row by row, then the dice show */
+.ld-cupx{position:absolute; left:0; top:50%; z-index:1; width:calc(var(--rds) * 1.5); height:calc(var(--rds) * 1.3); margin-top:calc(var(--rds) * -.65);
+  clip-path:polygon(20% 0,80% 0,100% 100%,0 100%); background:linear-gradient(180deg,transparent 80%,#c79566 80%), linear-gradient(90deg,#3b2213,#94613b 40%,#6c4125 72%,#3b2213);
+  transition:transform .35s cubic-bezier(.3,.8,.4,1), opacity .35s}
+.ld-rr.lift .ld-cupx{transform:translateY(-140%) rotate(-12deg); opacity:0}
+.ld-rd .ld-die{opacity:0; transform:scale(.5)}
+.ld-rr.lift .ld-rd .ld-die{opacity:1; transform:none}
+.ld-rv.counting .ld-rd .ld-die.miss{opacity:.3}
+.ld-rd .ld-die.cnt.on{box-shadow:0 0 0 2px var(--gold2), 0 0 14px rgba(245,220,148,.85); transform:translateY(-3px) scale(1.06)}
+.ld-rd .ld-die.cnt.wild.on{box-shadow:0 0 0 2px #ffb36b, 0 0 14px rgba(255,170,90,.8)}
+.ld-rd .ld-die.gone{position:relative; opacity:.55; transform:scale(.85); filter:grayscale(1); box-shadow:0 0 0 2px rgba(255,110,100,.8)}
+.ld-rd .ld-die.gone::after{content:"✕"; position:absolute; inset:0; display:grid; place-items:center; font-size:calc(var(--d) * .8); font-weight:900; color:#ff5a4a; line-height:1}
+.ld-die.plus{box-shadow:0 0 0 2px var(--green), 0 0 12px rgba(92,196,137,.8)}
+.ld-die.plus::after{content:"+1"; grid-area:1 / 1 / 4 / 4; place-self:center; font-weight:900; font-size:calc(var(--d) * .42); color:#1b7a3a; line-height:1}
+.ld-rv.done .ld-rr.lose{border-color:rgba(255,110,100,.85); background:rgba(120,20,15,.45); animation:ldShake .45s ease}
+.ld-rv.done .ld-rr.gain{border-color:rgba(92,196,137,.85); background:rgba(20,90,50,.4)}
+.ld-rvfoot{display:flex; align-items:center; justify-content:center; gap:12px; min-height:52px}
+.ld-count{flex:0 0 auto; display:flex; align-items:baseline; gap:4px; font-variant-numeric:tabular-nums}
+.ld-count b{font-size:calc(30px + 12px * var(--s)); font-weight:900; color:var(--gold2); line-height:1}
+.ld-count small{font-size:15px; color:var(--muted); font-weight:700}
+.ld-rv.done .ld-count.ok b{color:#7fe0a6}
+.ld-rv.done .ld-count.no b{color:#ff8f80}
+.ld-verdict{flex:0 1 auto; min-width:0; font-size:calc(14px + 3px * var(--s)); font-weight:800; line-height:1.35; text-align:center; word-break:keep-all;
+  opacity:0; transform:translateY(8px); transition:opacity .3s, transform .3s}
+.ld-rv.done .ld-verdict{opacity:1; transform:none}
+.ld-nw{white-space:nowrap}
+.ld-outline{color:#ff9b8f}
+.ld-winline{color:var(--gold2); font-size:1.15em}
+.ld-gravebox{flex:0 0 auto; --ds:26px}
+.ld-gravebox:empty{display:none}
+
+/* ---------- Spectators: no dock, a bigger table ---------- */
+.ld.spec{--bds:calc(46px + 34px * var(--s))}
+.ld.spec .ld-opps{padding-top:12px}
+.ld.spec .ld-say{font-size:calc(15px + 5px * var(--s))}
+.ld.spec .ld-h{font-size:calc(13px + 3px * var(--s)); min-height:calc(28px + 6px * var(--s))}
+.ld.spec .ld-h .av.sm{width:calc(18px + 6px * var(--s)); height:calc(18px + 6px * var(--s))}
+.ld.spec .ld-h .ld-chip.sm{--ds:calc(15px + 6px * var(--s))}
+.ld.spec .ld-opp{max-width:calc(150px + 60px * var(--s))}
+.ld.spec .ld-opps:not(.many) .ld-oname, .ld.spec .ld-opps.many .ld-oname{font-size:calc(11px + 3px * var(--s))}
+.ld.spec .ld-oname .av.sm{width:calc(18px + 8px * var(--s)); height:calc(18px + 8px * var(--s))}
+.ld.spec .ld-chip.sm{--ds:calc(14px + 6px * var(--s))}
+.ld.spec .ld-top{font-size:calc(12px + 2px * var(--s))}
+.ld.spec .ld-lr{font-size:calc(12px + 2px * var(--s))}
+.ld.spec .ld-need, .ld.spec .ld-odds{font-size:calc(12px + 2px * var(--s))}
+
+/* ---------- Bigger phones ---------- */
+.ld.tall .ld-opp{padding:8px 3px 5px}
+.ld.tall .ld-opps:not(.many) .ld-oname{font-size:12.5px}
+.ld.tall .ld-opps:not(.many) .ld-oname .av.sm{width:24px; height:24px; font-size:11px}
+.ld.tall .ld-h{min-height:28px; font-size:13px}
+
+/* ---------- Landscape: opponents + felt on the left, my dice and the picker on the right ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .ld{display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,40%); grid-template-rows:auto minmax(0,1fr)}
+  .ld-opps{grid-column:1; grid-row:1; padding-top:9px}
+  .ld-table{grid-column:1; grid-row:2; margin:2px 6px 6px 8px}
+  .ld-dock{grid-column:2; grid-row:1 / 3; border-top:0; border-left:1px solid var(--line); justify-content:center; padding-top:6px;
+    padding-right:calc(8px + env(safe-area-inset-right,0px))}
+  .ld-mid{display:grid; grid-template-columns:minmax(0,55fr) minmax(0,45fr); grid-template-rows:auto minmax(0,1fr); gap:6px 10px; align-content:center}
+  .ld-cur{grid-column:1; grid-row:1; min-width:0; justify-content:center}
+  .ld-ladder{grid-column:1; grid-row:2; align-self:start; justify-self:center}
+  .ld-mid:has(> .ld-ladder[hidden]) .ld-cur{grid-row:1 / 3; align-self:center}
+  .ld-hist{grid-column:2; grid-row:1 / 3; justify-content:flex-start; max-height:100%}
+  .ld.spec{grid-template-columns:minmax(0,1fr)}
+  .ld.spec .ld-table{margin:2px 10px 8px}
+  .ld-rvbox{max-width:900px}
+}
+@media (orientation:landscape) and (min-aspect-ratio:4/3) and (max-height:520px){
+  .ld-opp{flex-direction:row; flex-wrap:wrap; justify-content:center; padding:5px 4px 3px; gap:2px 5px}
+  .ld-oname{flex:1 0 100%; justify-content:center}
+  .ld-act{min-height:0}
+  .ld-dots{display:none}
+  .ld-dock{gap:4px; padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+  .ld-face{min-height:42px}
+  .ld-row .btn, .ld-step button{min-height:42px}
+  .ld-cap{display:none}
+  .ld-hist .say{display:none}
+  .ld-hist .pp{margin-left:auto}
+  .ld-hist .nm{max-width:45%}
+  .ld-shout{font-size:18px}
+  .ld-rvfoot{min-height:40px}
+}

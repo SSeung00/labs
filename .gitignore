@@ -1,0 +1,33 @@
+# Separate repositories that live in this folder on the author's PC
+/researchlab/
+/creativelab/
+
+# Local data, secrets and personal files never leave the PC
+data/
+.env
+*.db
+*.db-wal
+*.db-shm
+*.xlsx
+*.mlbak
+
+# Python
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+_probe*.py
+
+# Node / builds
+node_modules/
+dist/
+dist-next/
+dist-old/
+.pages/
+
+# Tools / editors / OS
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,38 @@
+[project]
+name = "moneylab-backend"
+version = "0.1.0"
+description = "MoneyLab local API: Banksalad import, cleanup, budgeting"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=1.12.0",
+    "cryptography>=50.0.2",
+    "fastapi>=0.142.2",
+    "openpyxl>=3.1.5",
+    "python-dotenv>=1.2.4",
+    "python-multipart>=0.0.32",
+    "segno>=1.6.6",
+    "sqlmodel>=0.0.48",
+    "uvicorn[standard]>=0.54.0",
+    "xlrd>=2.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# Local single-user app: naive local datetimes are intentional (Banksalad exports are local time).
+ignore = ["BLE001", "DTZ001", "DTZ005", "DTZ006", "DTZ007", "DTZ011"]

@@ -1,0 +1,436 @@
+/* Shared styles for the hub — portrait phone first. Per-game styles live in games/<id>/style.css
+   Theme colours, card backs, the button colour and the screen size are variables set by core/settings.js */
+:root{
+  color-scheme:dark;
+  --bg:#0f1a15; --bg2:#142219; --panel:#1a2a21; --panel2:#213429;
+  --felt1:#1f6b45; --felt2:#174f34; --felt3:#0f3523;
+  --ink:#f1ede2; --muted:#a9b3a6; --faint:#7d8a7f;
+  --line:rgba(241,237,226,.12); --line2:rgba(241,237,226,.26);
+  --gold:#e6c36a; --gold2:#f5dc94; --red:#d9534f; --blue:#4f8fd9; --green:#5cc489;
+  --accent:#e0794a; --accent2:#c35c2f;
+  --glow:#1d3326; --modal1:#22362b; --modal2:#18271f; --toastrgb:12,20,16;
+  --bk:repeating-linear-gradient(45deg,#7b2f3a 0 5px,#5c2029 5px 10px); --bk-edge:#e9d7a8; --bk-in:#4a171f;
+  --zoom:1;
+  --cw:52px; --ch:74px;
+  --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Screen size: the whole page is drawn at --zoom; the body divides its height so the app still fills exactly one screen */
+html{height:100%}
+body{height:calc(100vh / var(--zoom)); zoom:var(--zoom)}
+@supports (height:100dvh){ html{height:100dvh} body{height:calc(100dvh / var(--zoom))} }
+body{
+  margin:0; overflow:hidden; color:var(--ink); font-family:var(--font); font-size:15px; line-height:1.5;
+  background:radial-gradient(120% 80% at 50% 0%, var(--glow) 0%, var(--bg) 60%) var(--bg);
+  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; overscroll-behavior:none; -webkit-text-size-adjust:100%;
+}
+button{font:inherit; color:inherit; cursor:pointer; touch-action:manipulation}
+button:disabled{cursor:not-allowed}
+#app{height:100%}
+.screen{height:100%}
+.scroll{overflow-y:auto; -webkit-overflow-scrolling:touch}
+
+/* ---------- Home · lobby ---------- */
+.home{max-width:520px; margin:0 auto; padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.logo{margin:8px 0 2px; font-size:44px; letter-spacing:.06em; text-align:center; color:var(--gold); text-shadow:0 4px 24px rgba(230,195,106,.25)}
+.sub{margin:0 0 18px; text-align:center; color:var(--muted); font-size:14px}
+.sheet{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:16px; padding:18px 16px; box-shadow:0 20px 50px -20px rgba(0,0,0,.7)}
+.sheet h2{margin:2px 0 6px; font-size:21px}
+.sheet p{margin:0 0 12px; color:var(--muted); font-size:14px}
+.sheet p b{color:var(--ink)}
+.eyebrow{display:block; font-size:12px; letter-spacing:.14em; color:var(--gold); font-weight:700; margin-bottom:6px}
+.eyebrow.mt{margin-top:20px}
+.inp{width:100%; padding:12px 14px; border-radius:11px; border:1px solid var(--line2); background:rgba(0,0,0,.28); color:var(--ink); font:inherit; font-size:16px}
+.inp:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(230,195,106,.18)}
+.inp.code{letter-spacing:.3em; text-transform:uppercase; text-align:center; font-weight:700}
+.btns2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px}
+.split2{display:grid; grid-template-columns:1fr auto; gap:8px}
+.or{display:flex; align-items:center; gap:10px; color:var(--faint); font-size:12px; margin:16px 0 10px}
+.or::before,.or::after{content:""; flex:1; border-top:1px solid var(--line)}
+.err{color:#ff9b8f; font-size:13px; min-height:1.3em; margin-top:8px}
+.extlink{display:block; margin-top:14px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--gold2); text-decoration:none; font-size:14px; text-align:center}
+.foot{margin-top:20px; text-align:center; color:var(--faint); font-size:12px}
+.btn{padding:12px 16px; min-height:46px; border-radius:11px; border:1px solid var(--line2); background:rgba(255,255,255,.05); font-weight:700; font-size:15px}
+.btn:disabled{opacity:.4}
+.btn.primary{background:linear-gradient(180deg,var(--accent),var(--accent2)); border-color:rgba(255,220,180,.45); color:#fff}
+.btn.danger{color:#ff9b8f; border-color:rgba(255,155,143,.4)}
+.btn.small{padding:7px 12px; min-height:36px; font-size:13.5px}
+.linkbtn{background:none; border:0; color:var(--gold2); text-decoration:underline; padding:0 2px; font-size:13px}
+.ggrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+.gtile{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px 10px; border-radius:13px; border:1px solid var(--line); background:rgba(255,255,255,.04); text-align:center}
+.gtile .gicon{font-size:28px; line-height:1.2}
+.gtile b{font-size:14px}
+.gtile small{font-size:11.5px; color:var(--muted)}
+.gtile.on{border-color:var(--gold); background:rgba(230,195,106,.13); box-shadow:0 0 0 1px var(--gold) inset}
+.gtile:disabled{opacity:.55}
+.gtile.on:disabled{opacity:1}
+.about{margin:12px 0 4px; font-size:13.5px; color:var(--muted)}
+.about b{color:var(--ink)}
+.codebox{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-radius:12px; border:1px dashed rgba(230,195,106,.45); background:rgba(0,0,0,.22); margin-bottom:12px}
+.codebox b{font-size:28px; letter-spacing:.28em; color:var(--gold2)}
+.codebox small{display:block; color:var(--muted); font-size:12px}
+.plist{list-style:none; margin:0; padding:0}
+.plist li{display:flex; align-items:center; gap:10px; padding:7px 2px; border-bottom:1px solid var(--line)}
+.plist .nm{flex:1; font-weight:700}
+.tag{font-size:11px; padding:1px 8px; border-radius:999px; border:1px solid var(--line2); color:var(--muted)}
+.tag.host{color:var(--gold2); border-color:rgba(230,195,106,.5)}
+.tag.me{color:var(--green); border-color:rgba(92,196,137,.5)}
+.field{padding:10px 0; border-bottom:1px solid var(--line)}
+.field > span{display:block; font-size:13px; color:var(--muted); margin-bottom:6px}
+.field .note{display:block; color:var(--faint); font-size:12px; margin-top:5px}
+.seg{display:flex; flex-wrap:wrap; gap:6px}
+.seg button{padding:8px 12px; min-height:38px; border-radius:9px; border:1px solid var(--line2); background:rgba(255,255,255,.04); font-size:14px}
+.seg button[aria-pressed="true"]{background:linear-gradient(180deg,var(--accent),var(--accent2)); border-color:transparent; color:#fff; font-weight:700}
+.seg button:disabled{opacity:.5}
+.seg button[aria-pressed="true"]:disabled{opacity:.85}
+.row{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:16px}
+.row.split{justify-content:space-between; align-items:center}
+.waiting{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px; margin-top:12px}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--gold); animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* ---------- Avatars ---------- */
+.av{width:30px; height:30px; border-radius:50%; flex:0 0 auto; display:inline-grid; place-items:center; font-weight:800; font-size:13px; color:#16110d;
+  background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.5), rgba(255,255,255,0) 50%), var(--ac,#999); box-shadow:0 0 0 2px rgba(0,0,0,.4)}
+.av.sm{width:24px; height:24px; font-size:11px}
+.av.lg{width:40px; height:40px; font-size:16px}
+
+/* ---------- Game screen shell ---------- */
+.gscreen{display:flex; flex-direction:column}
+.gbar{position:relative; display:flex; align-items:center; gap:8px; padding:calc(6px + env(safe-area-inset-top,0px)) 10px 6px; background:rgba(0,0,0,.35); border-bottom:1px solid var(--line); flex:0 0 auto}
+.gtitle{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.25}
+.gtitle b{font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.gtitle span{font-size:12.5px; color:var(--gold2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+body.myturn .gtitle span{color:#fff; font-weight:700}
+.gbtns{display:flex; gap:5px}
+.ibtn{width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:16px; display:grid; place-items:center; padding:0}
+.ibtn[aria-pressed="false"]{opacity:.6}
+.timer{position:absolute; left:0; bottom:-1px; height:3px; width:0; background:var(--muted); transition:width .25s linear}
+.timer.mine{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.timer.low{background:var(--red)}
+.ticker{flex:0 0 auto; padding:4px 12px; font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:24px; background:rgba(0,0,0,.15)}
+.stage{flex:1; min-height:0; position:relative; overflow:hidden; padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* ---------- Playing cards (core/cards.js) ---------- */
+.pc{width:var(--cw); height:var(--ch); border-radius:6px; position:relative; flex:0 0 auto; overflow:hidden;
+  background:linear-gradient(180deg,#fffdf7,#f1ebdd); border:1px solid #cfc6b2; box-shadow:0 3px 8px rgba(0,0,0,.4);
+  color:#1b1b1b; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; touch-action:manipulation}
+.pc.red{color:#c8302c}
+.pc-corner{position:absolute; top:3px; left:4px; font-weight:800; font-size:14px; line-height:1; display:flex; flex-direction:column; align-items:center}
+.pc-corner i{font-style:normal; font-size:11px}
+.pc-corner.br{top:auto; left:auto; bottom:3px; right:4px; transform:rotate(180deg)}
+.pc-mid{position:absolute; inset:0; display:grid; place-items:center; font-size:26px}
+/* Joker: no corner label (it clipped on large cards); emoji + "JOKER" scale with the card width */
+.pc.joker .pc-mid{font-size:calc(var(--cw) * .5); bottom:22%}
+.pc.joker .pc-sub{position:absolute; bottom:5%; left:0; right:0; text-align:center; font-size:calc(var(--cw) * .17); font-weight:800; letter-spacing:.04em; line-height:1.05; display:flex; flex-direction:column; align-items:center}
+.pc.joker .pc-sub small{font-size:.72em; font-weight:700; letter-spacing:0; opacity:.8}
+.pc.back{background:var(--bk); border:2px solid var(--bk-edge); box-shadow:inset 0 0 0 2px var(--bk-in), 0 3px 8px rgba(0,0,0,.45)}
+.pc.sm{--cw:34px; --ch:48px}
+.pc.sm .pc-corner{font-size:11px} .pc.sm .pc-corner i{font-size:9px} .pc.sm .pc-mid{font-size:17px} .pc.sm .pc-corner.br{display:none}
+.pc.lg{--cw:64px; --ch:92px}
+.pc.lg .pc-corner{font-size:17px} .pc.lg .pc-mid{font-size:34px}
+.pc.sel{transform:translateY(-12px); box-shadow:0 0 0 3px var(--gold2), 0 10px 18px rgba(0,0,0,.5)}
+.pc.dim{filter:brightness(.55)}
+.pc.can{box-shadow:0 0 0 2px rgba(92,196,137,.8), 0 3px 8px rgba(0,0,0,.4)}
+
+/* ---------- Toasts · modals ---------- */
+.toast{position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,20px); z-index:300; pointer-events:none;
+  padding:10px 16px; border-radius:12px; background:rgba(var(--toastrgb),.96); border:1px solid var(--line2); font-size:14px; max-width:calc(100vw / var(--zoom) - 32px);
+  box-shadow:0 14px 40px -10px rgba(0,0,0,.9); opacity:0; transition:opacity .25s, transform .25s; text-align:center}
+.toast.on{opacity:1; transform:translate(-50%,0)}
+.scrim{position:fixed; inset:0; z-index:200; display:grid; place-items:center; padding:16px; background:rgba(4,8,6,.66); backdrop-filter:blur(3px); animation:fade .18s}
+.modal{position:relative; width:100%; max-width:480px; max-height:min(calc(88dvh / var(--zoom)),760px); overflow-y:auto; padding:22px 18px 16px; border-radius:16px;
+  background:linear-gradient(180deg,var(--modal1),var(--modal2)); border:1px solid var(--line2); box-shadow:0 30px 90px -20px rgba(0,0,0,.95); animation:rise .22s cubic-bezier(.2,.9,.3,1)}
+.modal h2{margin:4px 0 8px; font-size:20px; line-height:1.3}
+.modal p{margin:0 0 12px; color:var(--muted); font-size:14px}
+.modal p b{color:var(--ink)}
+.mclose{position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:none; color:var(--muted)}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{transform:translateY(14px); opacity:0}}
+.choices{display:flex; flex-direction:column; gap:8px; margin-top:8px}
+.choice{display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:12px 14px; border-radius:12px; border:1px solid var(--line2); background:rgba(255,255,255,.05); text-align:left}
+.choice small{color:var(--muted); font-size:12.5px}
+.rules{font-size:14px; color:var(--muted); line-height:1.65}
+.rules b{color:var(--ink)}
+.rules ul{padding-left:18px; margin:6px 0}
+.rules h4{margin:12px 0 4px; color:var(--gold2); font-size:14px}
+.results{list-style:none; margin:4px 0 0; padding:0}
+.results li{display:grid; grid-template-columns:28px 30px 1fr auto; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid var(--line)}
+.results li.me{background:rgba(230,195,106,.08)}
+.results .t b{display:block}
+.results .t small{color:var(--muted); font-size:12px}
+.results .v{font-weight:800; color:var(--gold2)}
+.medal{width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:12px; border:1px solid var(--line2)}
+.medal.r1{background:linear-gradient(180deg,#f3d48a,#b98a2f); color:#2a1c06}
+.medal.r2{background:linear-gradient(180deg,#e4e8ee,#9aa3ae); color:#1e2329}
+.medal.r3{background:linear-gradient(180deg,#e2a77a,#9a5c33); color:#2a1407}
+.loglist{list-style:none; margin:0; padding:0; font-size:13.5px}
+.loglist li{padding:6px 2px; border-bottom:1px solid var(--line); color:var(--muted)}
+.loglist li:first-child{color:var(--ink)}
+
+/* ---------- Table parts shared by the games ---------- */
+.felt{background:radial-gradient(ellipse at 50% 40%, var(--felt1) 0%, var(--felt2) 60%, var(--felt3) 100%)}
+.seatrow{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:8px 8px 4px}
+.seatchip{display:flex; align-items:center; gap:6px; padding:4px 10px 4px 4px; border-radius:999px; background:rgba(0,0,0,.32); border:1px solid var(--line); font-size:13px; max-width:100%}
+.seatchip .nm{font-weight:700; max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.seatchip .sub{color:var(--muted); font-size:12px; white-space:nowrap}
+.seatchip.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 18px rgba(230,195,106,.35)}
+.seatchip.me .nm::after{content:" (나)"; color:var(--green); font-weight:400; font-size:11px}
+html[lang="en"] .seatchip.me .nm::after{content:" (me)"}
+.seatchip.out{opacity:.55}
+.seatchip .ai{font-size:10px; padding:0 5px; border-radius:4px; border:1px solid var(--line2); color:var(--muted)}
+.seatchip .away{font-size:10px; padding:0 5px; border-radius:4px; border:1px solid rgba(255,155,143,.5); color:#ff9b8f}
+.dock{flex:0 0 auto; padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px)); background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.5)); border-top:1px solid var(--line)}
+.actions{display:flex; gap:8px}
+.actions .btn{flex:1}
+.hint{font-size:13px; color:var(--muted); min-height:1.4em; margin:2px 0 6px; text-align:center}
+.hint b{color:var(--gold2)}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+:root[data-motion="calm"] *{animation:none!important; transition:none!important}
+
+/* ---------- Language toggle ---------- */
+.langbtn{border:1px solid var(--line2); background:rgba(255,255,255,.05); color:var(--ink); border-radius:999px; font-size:13px; font-weight:700; padding:6px 12px; min-height:34px}
+.topbtns{float:right; display:flex; gap:6px; margin:-4px 0 0 8px}
+.sheet > .topbtns ~ h2{clear:both}
+.gbtns .langbtn{width:auto; padding:0 8px; font-size:12px; border-radius:10px}
+/* Narrow phones: slimmer header buttons so the (longer) English title and status fit */
+@media (max-width:420px){
+  .gbar{gap:6px; padding-left:8px; padding-right:6px}
+  .gbtns{gap:3px}
+  .gbtns .ibtn{width:32px; height:32px; font-size:15px}
+  .gbtns .langbtn{width:auto; min-width:0; padding:0 5px; font-size:11px; letter-spacing:-.02em}
+  .gtitle b{font-size:13.5px}
+  .gtitle span{font-size:12px}
+}
+
+/* Header: title + buttons on the first line, the status on its own full-width second line (it was cramped on narrow phones) */
+.gbar{flex-wrap:wrap; row-gap:2px}
+.gstatus{flex:0 0 100%; order:3; font-size:13px; line-height:1.3; color:var(--gold2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 1px}
+body.myturn .gstatus{color:#fff; font-weight:700}
+.gtitle{justify-content:center; min-height:32px}
+html[lang="en"] .logo{font-size:38px; letter-spacing:.02em}
+
+/* ---------- Rejoin card · reconnecting players ---------- */
+.resume{display:flex; gap:6px; margin:0 0 12px}
+.resume-go{flex:1; display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; padding:12px 14px; border-radius:13px;
+  border:1px solid rgba(230,195,106,.55); background:linear-gradient(180deg,rgba(230,195,106,.18),rgba(230,195,106,.07)); color:var(--ink)}
+.resume-go b{font-size:15.5px; color:var(--gold2)}
+.resume-go small{font-size:12.5px; color:var(--muted)}
+.resume-x{width:44px; border-radius:13px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--muted)}
+.tag.away{color:#ff9b8f; border-color:rgba(255,155,143,.5)}
+.plist li.away{opacity:.7}
+
+/* ---------- Connection log ---------- */
+pre.netlog{max-height:50vh; overflow:auto; margin:10px 0 0; padding:10px; border-radius:10px; background:rgba(0,0,0,.35);
+  border:1px solid var(--line); font:11.5px/1.45 ui-monospace,Menlo,Consolas,monospace; color:var(--ink); white-space:pre-wrap; word-break:break-all}
+
+/* ---------- Top buttons · home name row ---------- */
+.roundbtn{width:36px; height:34px; border-radius:999px; border:1px solid var(--line2); background:rgba(255,255,255,.05); font-size:16px; display:grid; place-items:center; padding:0}
+.namerow{display:flex; gap:8px; align-items:center}
+.namerow .inp{flex:1; min-width:0}
+.avbtn{position:relative; flex:0 0 auto; width:48px; height:48px; padding:0; border:0; background:none; border-radius:50%}
+.avbtn .av{width:46px; height:46px; font-size:19px}
+.avbtn > i{position:absolute; right:-4px; bottom:-4px; font-style:normal; font-size:11px; width:20px; height:20px; border-radius:50%; display:grid; place-items:center;
+  background:var(--panel2); border:1px solid var(--line2)}
+.foot.links{display:flex; flex-wrap:wrap; justify-content:center; gap:4px 14px}
+
+/* ---------- Avatars: emoji faces, extra large ---------- */
+.av.emo > i{font-style:normal; font-size:1.35em; line-height:1}
+.av.xl{width:54px; height:54px; font-size:22px}
+.av.emo.xl > i{font-size:1.4em}
+
+/* ---------- Lobby: me, invite, the others ---------- */
+.mecard{display:flex; align-items:center; gap:12px; padding:12px; margin:4px 0 12px; border-radius:14px; cursor:pointer;
+  background:linear-gradient(135deg,rgba(230,195,106,.16),rgba(230,195,106,.04)); border:1px solid rgba(230,195,106,.45)}
+.mecard .av{width:64px; height:64px; font-size:26px; box-shadow:0 0 0 3px rgba(0,0,0,.35), 0 0 0 5px rgba(230,195,106,.5)}
+.me-t{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px}
+.me-t b{font-size:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.me-t small{color:var(--muted); font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.me-t small.faint{color:var(--faint)}
+.me-tags{display:flex; gap:4px}
+.me-edit{flex:0 0 auto}
+.invite{display:flex; gap:12px; align-items:center; padding:10px; border-radius:12px; border:1px dashed rgba(230,195,106,.45); background:rgba(0,0,0,.22)}
+.qr{display:grid; place-items:center; background:#fff; border-radius:8px; padding:0; border:0}
+.qr svg{display:block; width:100%; height:100%}
+.qr.mini{flex:0 0 auto; width:92px; height:92px; cursor:zoom-in}
+.qr.big{width:min(260px,70vw); aspect-ratio:1; margin:6px auto 10px; border-radius:12px}
+.qr-wait{color:#555; font-size:12px; text-align:center; padding:6px}
+.inv-mid{flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:2px}
+.inv-mid small{color:var(--muted); font-size:12px}
+.inv-mid b{font-size:26px; letter-spacing:.24em; color:var(--gold2); line-height:1.15}
+.inv-hint{color:var(--faint); font-size:11.5px}
+.inv-send{margin-top:6px}
+.inv-code{letter-spacing:.2em; color:var(--gold2)}
+.inv-link{font-size:12px; color:var(--muted); text-align:center; word-break:break-all; margin-bottom:4px}
+.crowd{display:grid; grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); gap:10px 6px; padding:4px 0 2px}
+.pal{display:flex; flex-direction:column; align-items:center; gap:3px; min-width:0; text-align:center}
+.pal b{font-size:13.5px; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.pal small{font-size:11px; color:var(--muted); max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.pal small.host{color:var(--gold2)}
+.pal small.in{color:var(--green)}
+.pal small.away{color:#ff9b8f}
+.pal.away .av{filter:grayscale(.8) brightness(.7)}
+.pal.new .av{animation:palIn .7s cubic-bezier(.2,1.4,.4,1)}
+@keyframes palIn{0%{transform:scale(.3); opacity:0} 60%{transform:scale(1.15); opacity:1}}
+.pal.ghost{opacity:.6}
+.av.ghost-av{background:rgba(255,255,255,.06); border:1px dashed var(--line2); box-shadow:none}
+.crowd-empty{grid-column:1/-1; color:var(--faint); font-size:13px; padding:10px 4px; text-align:center; border:1px dashed var(--line); border-radius:12px}
+.tally{list-style:none; margin:0; padding:0}
+.tally li{display:grid; grid-template-columns:26px 24px 1fr auto; align-items:center; gap:8px; padding:6px 2px; border-bottom:1px solid var(--line)}
+.tally li.me{background:rgba(230,195,106,.08)}
+.tally .t b{display:block; font-size:14px}
+.tally .t small{color:var(--muted); font-size:11.5px}
+.tally .v{font-weight:800; color:var(--gold2)}
+.set-note{display:block; color:var(--faint); font-size:12px; margin-top:6px}
+
+/* ---------- Game screen: waiting for someone who dropped out ---------- */
+.awaybar{flex:0 0 auto; padding:6px 10px; background:rgba(217,83,79,.14); border-bottom:1px solid rgba(255,155,143,.35)}
+.awayrow{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px}
+.awayrow > span{display:flex; align-items:center; gap:6px; min-width:0}
+
+/* ---------- Reactions ---------- */
+.emopick{position:fixed; z-index:250; display:grid; grid-template-columns:repeat(4,auto); gap:4px; padding:8px; border-radius:14px; max-width:290px;
+  background:rgba(var(--toastrgb),.97); border:1px solid var(--line2); box-shadow:0 14px 40px -10px rgba(0,0,0,.9); animation:rise .15s}
+.emopick button{border:1px solid var(--line); background:rgba(255,255,255,.05); border-radius:10px; min-height:40px}
+.emopick .em{font-size:22px; width:48px}
+.emopick .ph{grid-column:span 2; font-size:13px; font-weight:700; padding:0 8px}
+.emotes{position:fixed; z-index:150; right:8px; top:calc(70px + env(safe-area-inset-top,0px)); display:flex; flex-direction:column; align-items:flex-end; gap:6px; pointer-events:none}
+.emo-b{display:flex; align-items:center; gap:6px; padding:4px 10px 4px 4px; border-radius:999px; background:rgba(var(--toastrgb),.92); border:1px solid var(--line2);
+  box-shadow:0 8px 24px -8px rgba(0,0,0,.8); animation:emoIn 3.2s ease forwards}
+.emo-b .t{font-size:24px; line-height:1}
+.emo-b.ph .t{font-size:14px; font-weight:800; color:var(--gold2)}
+.emo-b small{font-size:11px; color:var(--muted); max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+@keyframes emoIn{0%{transform:translateX(30px) scale(.6); opacity:0} 8%{transform:none; opacity:1} 80%{opacity:1; transform:none} 100%{opacity:0; transform:translateY(-24px)}}
+
+/* ---------- Confetti ---------- */
+.confetti{position:fixed; inset:0; z-index:400; pointer-events:none; overflow:hidden}
+.confetti i{position:absolute; top:-20px; border-radius:2px; animation:conf var(--d) cubic-bezier(.3,.6,.6,1) var(--w) forwards; opacity:0}
+@keyframes conf{0%{opacity:1; transform:translate(0,0) rotate(0)} 100%{opacity:.9; transform:translate(var(--x),105vh) rotate(var(--r))}}
+
+/* ---------- Settings · profile · stats ---------- */
+.set-h{font-size:12.5px; font-weight:700; letter-spacing:.06em; color:var(--gold); margin:14px 0 6px}
+.swatches{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px}
+.swatch{display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 4px 6px; border-radius:11px; border:1px solid var(--line); background:rgba(255,255,255,.03)}
+.swatch[aria-pressed="true"]{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; background:rgba(230,195,106,.1)}
+.swatch small{font-size:11.5px; color:var(--muted)}
+.swatch[aria-pressed="true"] small{color:var(--ink); font-weight:700}
+.sw-table{width:58px; height:34px; border-radius:17px; background:radial-gradient(ellipse at 50% 40%,var(--a),var(--b)); box-shadow:0 0 0 4px var(--p), 0 0 0 5px rgba(255,255,255,.15)}
+.sw-back{width:26px; height:36px; border-radius:4px; border:2px solid}
+.sw-dot{width:30px; height:30px; border-radius:50%; box-shadow:0 0 0 2px rgba(0,0,0,.3)}
+.set-sub{font-size:12px; color:var(--muted); margin:10px 0 5px}
+.deck-sample{display:flex; justify-content:center; align-items:flex-end; height:62px; padding-top:2px}
+.deck-sample > *{margin:0 -7px; transform:rotate(-5deg)}
+.deck-sample > * + *{transform:rotate(6deg) translateY(2px)}
+.deck-sample .pc{--cw:40px; --ch:57px}
+.deck-sample .pc .pc-corner{font-size:11px} .deck-sample .pc .pc-corner i{font-size:9px} .deck-sample .pc .pc-mid{font-size:21px}
+.deck-sample .dm-card{--cw:40px}
+.deck-sample .hw{--cw:37px; --ch:57px}
+.set-two{display:flex; flex-direction:column; gap:6px}
+.set-app{display:flex; flex-wrap:wrap; gap:8px}
+.prof-prev{display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; background:rgba(0,0,0,.22); border:1px solid var(--line)}
+.prof-prev .av{width:64px; height:64px; font-size:26px}
+.prof-prev b{display:block; font-size:18px}
+.prof-prev small{color:var(--muted); font-size:13px}
+.faces{display:grid; grid-template-columns:repeat(auto-fill,minmax(40px,1fr)); gap:4px}
+.face{height:40px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.04); font-size:21px; padding:0}
+.face[aria-pressed="true"]{border-color:var(--gold); background:rgba(230,195,106,.18); box-shadow:0 0 0 1px var(--gold) inset}
+.face-letter{font-size:15px; font-weight:800; color:var(--muted)}
+.colors{display:flex; flex-wrap:wrap; gap:6px}
+.colorbtn{width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,0,0,.35); padding:0}
+.colorbtn.auto{width:auto; padding:0 10px; border-radius:999px; border:1px solid var(--line2); background:rgba(255,255,255,.05); font-size:12px; color:var(--muted)}
+.colorbtn[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--gold2)}
+.stat-big{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:6px 0 10px}
+.stat-big div{text-align:center; padding:8px 4px; border-radius:11px; background:rgba(0,0,0,.22); border:1px solid var(--line)}
+.stat-big b{display:block; font-size:22px; color:var(--gold2)}
+.stat-big small{color:var(--muted); font-size:12px}
+table.stats{width:100%; border-collapse:collapse; font-size:13.5px}
+table.stats th{color:var(--muted); font-weight:600; font-size:12px; text-align:right; padding:4px}
+table.stats th:first-child, table.stats td:first-child{text-align:left}
+table.stats td{padding:6px 4px; border-top:1px solid var(--line); text-align:right}
+
+/* ---------- Phones held sideways: ask to turn the phone; if they insist, a one-line header so the game keeps its height ---------- */
+.rotate{display:none}
+.rotate-ico{font-size:44px; animation:rotTip 2.4s ease-in-out infinite}
+@keyframes rotTip{0%,30%{transform:rotate(-90deg)} 60%,100%{transform:rotate(0)}}
+.rotate h3{margin:8px 0 4px; font-size:20px}
+.rotate p{margin:0 0 14px; color:var(--muted); font-size:14px}
+.gbtns .langbtn{white-space:nowrap}
+@media (orientation:landscape) and (max-height:520px){
+  body[data-screen="game"]:not(.side-ok):not(.game-land) .rotate{display:grid; place-items:center; position:fixed; inset:0; z-index:190; padding:16px; text-align:center;
+    background:rgba(var(--toastrgb),.95)}
+  .gbar{flex-wrap:nowrap; padding-top:calc(3px + env(safe-area-inset-top,0px)); padding-bottom:3px;
+    padding-left:calc(10px + env(safe-area-inset-left,0px)); padding-right:calc(10px + env(safe-area-inset-right,0px))}
+  .gtitle{flex:0 1 auto; min-height:28px}
+  .gstatus{order:0; flex:1 1 auto; min-width:0; padding:0 4px}
+  .gbtns .ibtn{width:30px; height:30px; font-size:14px}
+  .gbtns .ibtn.langbtn{width:auto; padding:0 6px; white-space:nowrap}
+  .ticker{display:none}
+  .stage{padding-left:env(safe-area-inset-left,0px); padding-right:env(safe-area-inset-right,0px)}
+  .emotes{top:44px}
+}
+
+/* ---------- Playing-card face designs (core/cards.js adds d-<design>) ----------
+   Sizes stay relative to --cw so the games' own sizing keeps working. Faces only (never .back), and no box-shadow:
+   the games draw selection and highlight rings with it. */
+.pc-rk{display:none}
+/* Big index: one large rank with the suit under it, readable at a glance */
+.pc.pc:not(.back):not(.joker).d-jumbo.d-jumbo .pc-mid, .pc.pc:not(.back).d-jumbo.d-jumbo .pc-corner.br{display:none}
+.pc.pc:not(.back).d-jumbo.d-jumbo .pc-rk{display:flex; position:absolute; inset:18% 0 4% 0; flex-direction:column; align-items:center; justify-content:center; line-height:.95}
+.pc.pc:not(.back).d-jumbo.d-jumbo .pc-rk b{font-size:calc(var(--cw) * .58); font-weight:900; letter-spacing:-.04em}
+.pc.pc:not(.back).d-jumbo.d-jumbo .pc-rk i{font-style:normal; font-size:calc(var(--cw) * .36)}
+.pc.pc:not(.back).d-jumbo.d-jumbo .pc-corner i{display:none}
+/* Four colours: every suit its own colour (spades black, hearts red, diamonds blue, clubs green), corner index on a tinted chip */
+.pc.pc:not(.back).d-four.d-four.s-S{color:#1b1b1b} .pc.pc:not(.back).d-four.d-four.s-H{color:#c8302c} .pc.pc:not(.back).d-four.d-four.s-D{color:#1f5fbf} .pc.pc:not(.back).d-four.d-four.s-C{color:#1b7a3a}
+.pc.pc:not(.back).d-four.d-four{background:#fff; border-color:#c9ccd2}
+.pc.pc:not(.back).d-four.d-four .pc-corner{padding:2px 2px 1px; border-radius:4px; background:color-mix(in srgb, currentColor 12%, transparent)}
+.pc.pc:not(.back).d-four.d-four .pc-mid{font-size:calc(var(--cw) * .56)}
+/* Vintage: aged paper, serif type, a printed double frame and the suit in a medallion */
+.pc.pc:not(.back).d-vintage.d-vintage{font-family:Georgia,"Times New Roman",serif; color:#2e2418; border-color:#8b6b3d;
+  background:radial-gradient(circle at 50% 45%, #f8edd2 0%, #ecd9b0 70%, #dcc28f 100%);
+}
+.pc.pc:not(.back).d-vintage.d-vintage::before{content:""; position:absolute; inset:calc(var(--cw) * .045); border:1px solid #8b6b3d;
+  border-radius:calc(var(--cw) * .05); pointer-events:none}
+.pc.pc:not(.back).d-vintage.d-vintage.red{color:#8e2a1c}
+.pc.pc:not(.back).d-vintage.d-vintage .pc-mid{inset:22% 18%; border-radius:50%; border:1.5px solid currentColor; opacity:.9}
+.pc.pc:not(.back).d-vintage.d-vintage .pc-corner{font-weight:700}
+/* Neon: a dark face with glowing symbols */
+.pc.pc:not(.back).d-neon.d-neon{background:linear-gradient(160deg,#1a2030,#0c1018); border-color:#34405a; color:#6fe3ff}
+.pc.pc:not(.back).d-neon.d-neon.red{color:#ff5c8a}
+.pc.pc:not(.back).d-neon.d-neon .pc-corner, .pc.pc:not(.back).d-neon.d-neon .pc-mid, .pc.pc:not(.back).d-neon.d-neon .pc-sub{text-shadow:0 0 6px currentColor, 0 0 14px color-mix(in srgb, currentColor 55%, transparent)}
+.pc.pc:not(.back).d-neon.d-neon.joker{color:#d78bff}
+/* Minimal: flat, no second corner, one big suit tucked into the lower right */
+.pc.pc:not(.back).d-minimal.d-minimal{background:#fafafa; border-color:transparent; border-radius:calc(var(--cw) * .14)}
+.pc.pc:not(.back).d-minimal.d-minimal .pc-corner.br{display:none}
+.pc.pc:not(.back).d-minimal.d-minimal .pc-corner{font-family:system-ui,sans-serif; font-weight:900; letter-spacing:-.03em}
+.pc.pc:not(.back).d-minimal.d-minimal .pc-mid{inset:auto -12% -14% auto; width:auto; height:auto; font-size:calc(var(--cw) * .95); opacity:.9; line-height:1}
+.pc.pc:not(.back).d-minimal.d-minimal.joker .pc-mid{inset:0; font-size:calc(var(--cw) * .5)}
+
+/* ---------- Watching screens (TV / tablet) · people waiting · replays ---------- */
+.tvlink{display:block; margin:10px auto 0; font-size:12.5px}
+.specbar{flex:0 0 auto; padding:4px 12px; font-size:12.5px; color:var(--gold2); background:rgba(230,195,106,.1); border-bottom:1px solid rgba(230,195,106,.25); text-align:center}
+.tvcard{display:flex; align-items:center; gap:12px; padding:12px; margin:4px 0 12px; border-radius:14px; background:rgba(0,0,0,.22); border:1px solid var(--line2)}
+.tvcard .tv-ico{font-size:34px}
+.tvcard b{display:block; font-size:17px}
+.tvcard small{color:var(--muted); font-size:12.5px}
+.watchers{margin-top:8px; font-size:12.5px; color:var(--muted)}
+.replaybtn{display:block; margin:12px auto 0}
+body.replaying #bEmote, body.replaying #bMenu, body.replaying #bLog{display:none}
+.replaybar{flex:0 0 auto; padding:5px 8px; background:rgba(0,0,0,.35); border-bottom:1px solid var(--line)}
+.rp-row{display:flex; align-items:center; gap:5px}
+.rp-row .ibtn{width:34px; height:32px; flex:0 0 auto}
+.rp-seek{flex:1; min-width:40px; accent-color:var(--gold)}
+.rp-pos{font-size:11.5px; color:var(--muted); min-width:52px; text-align:right; font-variant-numeric:tabular-nums}
+.rp-speed{font-size:12px !important; font-weight:800}
+.rp-view{margin-top:4px; font-size:12px; color:var(--muted)}
+.rp-seat{flex:1; min-width:0; padding:4px 6px; border-radius:8px; border:1px solid var(--line2); background:rgba(0,0,0,.3); color:var(--ink); font:inherit; font-size:12.5px}
+/* a card flying across the table (ui.js fly()) */
+.flyer{will-change:transform}
+
+/* ---------- Opened inside KakaoTalk ---------- */
+.kakao{margin:0 0 12px; padding:12px 14px; border-radius:13px; background:#fee500; color:#191600; display:flex; flex-direction:column; gap:4px}
+.kakao b{font-size:14.5px}
+.kakao small{font-size:12.5px; line-height:1.45; color:#3a3300}
+.kakao-btns{display:flex; gap:6px; margin-top:4px}
+.kakao .btn{color:#191600; border-color:rgba(0,0,0,.25); background:rgba(255,255,255,.55)}
+.kakao .btn.primary{background:#191600; color:#fee500; border-color:transparent}

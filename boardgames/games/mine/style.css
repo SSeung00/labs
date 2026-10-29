@@ -1,0 +1,247 @@
+/* Gold Mine — earthy tunnel board. Class prefix mn- */
+.mn{height:100%; display:flex; flex-direction:column; background:linear-gradient(180deg,#1b130c,#110b06)}
+
+/* Name-chip grid: one row up to 5 players, two rows from 6. Each chip: name / hand · gold · broken tools / last action */
+.mn-seats{flex:0 0 auto; display:grid; grid-template-columns:repeat(var(--cols,5),minmax(0,1fr)); gap:4px; padding:5px 6px 3px}
+.mn-chip{min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:1px; padding:3px 5px 3px; border-radius:9px; text-align:left;
+  background:rgba(0,0,0,.32); border:1px solid var(--line); font-size:11.5px; line-height:1.3; position:relative}
+.mn-chip > span{display:flex; align-items:center; gap:4px; min-width:0; white-space:nowrap; overflow:hidden}
+.mn-chip .l1 .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:12px}
+.mn-chip .l1 i{font-style:normal; font-size:9px; padding:0 3px; border-radius:3px; border:1px solid var(--line2); color:var(--muted); flex:0 0 auto}
+.mn-chip .l1 i.away{border:0; font-size:11px; padding:0}
+.mn-av.av{width:16px; height:16px; font-size:9px; box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.mn-chip .l2{color:var(--muted); font-size:11px; gap:5px}
+.mn-chip .l3{font-size:10.5px; min-height:14px}
+.mn-chip .l3 .mn-k{overflow:hidden; text-overflow:ellipsis; min-width:0}
+.mn-seats.tight .mn-chip{padding:2px 4px; font-size:11px}
+.mn-seats.tight .mn-chip .l2{gap:3px; font-size:10.5px}
+.mn-seats.tight .mn-chip .l3{font-size:10px; letter-spacing:-.02em}
+.mn-seats.tight .mn-rtag{padding:0 3px; font-size:10px}
+.mn-seats.tight .mn-gain{font-size:10px}
+.mn-chip.turn{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 0 12px rgba(230,195,106,.35); background:rgba(230,195,106,.1)}
+.mn-chip.me{background:rgba(92,196,137,.1); border-color:rgba(92,196,137,.45)}
+.mn-chip.me.turn{border-color:var(--gold)}
+.mn-chip.bkn{border-left:3px solid #ff4b3e}
+.mn-tools{margin-left:auto; padding:0 3px; font-size:13px; border-radius:4px; background:rgba(217,83,79,.28); display:inline-flex; gap:2px; flex:0 0 auto}
+.mn-chip.mn-pick{border-color:var(--red); box-shadow:0 0 0 2px rgba(217,83,79,.6); animation:mnPick 1s ease-in-out infinite}
+.mn-chip.mn-acted{animation:mnHit .6s ease}
+.mn-g{color:var(--gold2)}
+.mn-gain{color:var(--gold2); font-size:11px}
+/* Action badge colours: path (gold) · harmful (red) · repair (green) · map (blue) · discard (grey) */
+.mn-k{color:var(--muted)}
+.mn-k.path{color:var(--gold2)}
+.mn-k.bad{color:#ff8a7e}
+.mn-k.fix{color:#7fdca6}
+.mn-k.map{color:#8fb8ee}
+.mn-k.none{color:var(--faint)}
+.mn-bk{position:relative; display:inline-block; line-height:1}
+.mn-bk::after{content:""; position:absolute; left:-2px; right:-2px; top:50%; height:2px; margin-top:-1px; background:#ff4b3e; transform:rotate(-40deg); border-radius:2px; box-shadow:0 0 2px #000}
+.mn-bk.big::after{height:3px; margin-top:-1.5px}
+.mn-rtag{font-size:10.5px; padding:0 5px; border-radius:4px; font-weight:700; white-space:nowrap}
+.mn-rtag.m{background:rgba(230,195,106,.2); color:var(--gold2)}
+.mn-rtag.s{background:rgba(217,83,79,.25); color:#ff9b8f}
+.mn-hit{animation:mnHit .7s ease}
+
+/* My info line */
+.mn-bar{flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:2px 6px; font-size:12.5px; color:var(--muted)}
+.mn-me{flex:1; min-width:0; display:flex; align-items:center; gap:8px; white-space:nowrap; overflow:hidden}
+.mn-me b{color:var(--ink)}
+.mn-mytools{padding:1px 7px; border-radius:6px; font-size:12px}
+.mn-mytools.ok{color:#7fdca6; background:rgba(92,196,137,.12)}
+.mn-mytools.bad{color:#ffb3aa; background:rgba(217,83,79,.3); font-weight:700; display:inline-flex; gap:3px; align-items:center}
+.mn-role{flex:0 0 auto; min-height:32px; padding:3px 10px; border-radius:999px; border:1px dashed var(--line2); background:rgba(255,255,255,.04); font-size:12.5px; white-space:nowrap}
+.mn-role.open.m{border-style:solid; border-color:var(--gold); color:var(--gold2); background:rgba(230,195,106,.12)}
+.mn-role.open.s{border-style:solid; border-color:var(--red); color:#ff9b8f; background:rgba(217,83,79,.15)}
+.mn-zb{min-width:36px; height:32px; border-radius:9px; border:1px solid var(--line2); background:rgba(255,255,255,.06); font-size:16px; font-weight:700; padding:0 8px; flex:0 0 auto}
+.mn-zb:disabled{opacity:.35}
+
+/* Cells left to each goal */
+.mn-goals{flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:2px 6px 4px}
+.mn-gl{flex:1; min-width:0; display:flex; align-items:center; gap:4px; white-space:nowrap; overflow:hidden; font-size:12px; color:var(--muted)}
+.mn-gl .lead{font-size:11px; color:var(--faint)}
+.mn-gp{padding:2px 7px; border-radius:7px; border:1px solid var(--line); background:rgba(255,255,255,.04)}
+.mn-gp b{color:var(--ink); font-size:13.5px}
+.mn-gp.best{border-color:var(--gold); background:rgba(230,195,106,.14); color:var(--gold2)}
+.mn-gp.best b{color:var(--gold2)}
+.mn-gp.coal{opacity:.6}
+.mn-gp.cut{color:#ff8a7e}
+.mn-zoom{display:flex; gap:4px; flex:0 0 auto}
+
+/* Board + log: the board takes its content height, the log gets the rest */
+.mn-body{flex:1 1 0; min-height:0; position:relative; display:flex; flex-direction:column}
+.mn-mid{flex:0 1 auto; min-height:0; position:relative; margin:0 6px}
+.mn-frame{position:absolute; inset:0; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-x pan-y; display:grid; border-radius:12px; padding:2px;
+  background:radial-gradient(circle at 30% 20%, rgba(255,210,150,.06) 0 1.5px, transparent 2px) 0 0/19px 19px,
+    radial-gradient(circle at 70% 60%, rgba(0,0,0,.28) 0 2px, transparent 3px) 0 0/27px 27px, linear-gradient(180deg,#2f2014,#1d140c);
+  box-shadow:inset 0 0 0 1px rgba(230,195,106,.15), inset 0 8px 30px rgba(0,0,0,.5)}
+.mn-grid{position:relative; margin:auto; --cs:34px;
+  background-image:linear-gradient(rgba(255,230,180,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,230,180,.05) 1px, transparent 1px);
+  background-size:var(--cs) var(--cs)}
+.mn-c{position:absolute; width:var(--cs); height:var(--cs)}
+.mn-front{border:1.5px dashed rgba(92,196,137,.55); border-radius:5px; background:rgba(92,196,137,.06)}
+.mn-tile{border-radius:3px; overflow:hidden; background:radial-gradient(circle at 35% 30%, #7a5130, #5a3920 70%); box-shadow:inset 0 0 0 1px rgba(0,0,0,.45)}
+.mn-tile svg, .mn-mini svg, .mn-peekbig svg{display:block; width:100%; height:100%}
+.mn-t0 line{stroke:#24160b; stroke-width:16; stroke-linecap:round}
+.mn-t1 line{stroke:#eab95e; stroke-width:9; stroke-linecap:round}
+.mn-rk circle{fill:#918878; stroke:#3b352e; stroke-width:1.2}
+.mn-coal circle{fill:#1d1d1f; stroke:#55555c; stroke-width:1}
+.mn-gold path{fill:#f6cf4f; stroke:#8a5d10; stroke-width:1.2; stroke-linejoin:round}
+.mn-lad path{stroke:#6b3f1d; stroke-width:2.2; fill:none; stroke-linecap:round}
+.mn-start{background:radial-gradient(circle,#8a5a30,#5d3a1e); box-shadow:inset 0 0 0 2px #c58b4a}
+.mn-lbl{position:absolute; left:0; right:0; bottom:1px; text-align:center; font-style:normal; font-size:calc(var(--cs) * .24); font-weight:800; color:#fff3d6; text-shadow:0 1px 2px #000; pointer-events:none; line-height:1.1}
+.mn-goal.down{background:linear-gradient(145deg,#3b4054,#222634); box-shadow:inset 0 0 0 2px rgba(230,195,106,.55); display:grid; place-items:center}
+.mn-goal.down.gold{box-shadow:inset 0 0 0 2px #f6cf4f}
+.mn-q{font-weight:900; color:var(--gold2); font-size:calc(var(--cs) * .45); line-height:1}
+.mn-peek{position:absolute; right:0; top:0; font-size:calc(var(--cs) * .27); background:rgba(0,0,0,.78); border-radius:0 3px 0 6px; padding:0 2px; line-height:1.3; white-space:nowrap}
+.mn-goal.rev.gold{box-shadow:inset 0 0 0 2px #f6cf4f, 0 0 16px rgba(246,207,79,.6)}
+.mn-goal.rev.coal{box-shadow:inset 0 0 0 2px #555}
+.mn-last{box-shadow:inset 0 0 0 1px rgba(0,0,0,.45), 0 0 0 2px rgba(245,220,148,.8)}
+.mn-new{animation:mnNew .45s ease}
+.mn-flip{animation:mnFlip .6s ease}
+.mn-dust{border-radius:50%; background:radial-gradient(circle, rgba(205,185,150,.85), rgba(120,100,80,0) 70%); animation:mnDust .9s ease forwards; pointer-events:none}
+.mn-spot{padding:0; border:2px dashed rgba(92,196,137,.95); background:rgba(92,196,137,.25); border-radius:5px; z-index:2}
+.mn-spot.on{border-style:solid; background:rgba(92,196,137,.1)}
+.mn-spot.pre{border-color:rgba(160,220,185,.6); background:rgba(92,196,137,.12)}
+.mn-spot.rock{border-color:rgba(255,110,95,.95); background:rgba(217,83,79,.22)}
+.mn-spot.rock.on{border-style:solid; background:rgba(217,83,79,.5)}
+.mn-spot.rock.pre{border-color:rgba(255,140,125,.55); background:rgba(217,83,79,.1)}
+.mn-spot.map{border-color:var(--gold2); background:rgba(245,220,148,.16); animation:mnPulse 1.2s ease-in-out infinite}
+.mn-spot.map.pre{animation:none; opacity:.6}
+.mn-ghost{opacity:.9; z-index:1; pointer-events:none; box-shadow:0 0 0 2px var(--green), 0 6px 14px rgba(0,0,0,.6)}
+
+/* This round's log */
+.mn-log{flex:1 1 0; min-height:0; overflow-y:auto; margin:4px 6px 0; padding:0 2px; font-size:12.5px; color:var(--muted)}
+.mn-lstick{position:sticky; top:0; z-index:1; background:#140e08}
+.mn-lhead{display:flex; justify-content:space-between; gap:8px; padding:3px 4px; font-size:11px; color:var(--faint); background:#140e08; border-bottom:1px solid var(--line); white-space:nowrap; overflow:hidden}
+.mn-lhead b{color:#ff9b8f}
+.mn-lempty{padding:8px 4px; font-size:12.5px; line-height:1.6}
+.mn-log ol{list-style:none; margin:0; padding:0}
+.mn-log li{display:flex; align-items:center; gap:5px; padding:3px 4px; border-bottom:1px solid rgba(241,237,226,.06); white-space:nowrap; overflow:hidden}
+.mn-log li:first-child{background:rgba(230,195,106,.07)}
+.mn-log li.me b{color:#7fdca6}
+.mn-log li b{color:var(--ink); max-width:72px; overflow:hidden; text-overflow:ellipsis; flex:0 0 auto}
+.mn-log li .mn-k{overflow:hidden; text-overflow:ellipsis}
+
+/* Hand · buttons */
+.mn-dock{padding-top:4px}
+.mn-dock .hint{margin:0 0 2px; font-size:12.5px; line-height:1.35; height:2.7em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical}   /* fixed two lines: the board doesn't jump when the text changes */
+.mn-hand{position:relative; display:flex; justify-content:center; gap:5px; padding:8px 0 4px}
+.mn-card{position:relative; flex:0 0 auto; width:min(var(--cwmax, 66px), calc((100% - (var(--hn, 6) - 1) * 5px) / var(--hn, 6))); min-width:0; aspect-ratio:50/66; padding:3px 2px 2px; border-radius:8px; border:1px solid rgba(230,195,106,.35); background:linear-gradient(180deg,#3d2a1a,#2a1c11);
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:1px; transition:transform .15s, box-shadow .15s, opacity .15s}
+.mn-card small{font-size:10px; line-height:1.15; color:var(--muted); text-align:center; white-space:nowrap; overflow:hidden; max-width:100%}
+.mn-mini{display:block; width:78%; aspect-ratio:1; border-radius:3px; overflow:hidden; background:radial-gradient(circle at 35% 30%, #7a5130, #5a3920 70%); transition:transform .2s}
+.mn-ic{display:grid; place-items:center; flex:1; font-size:23px; line-height:1}
+.mn-ic.fix{display:flex; align-items:center; justify-content:center; font-size:15px}
+.mn-ic.fix i{font-style:normal; font-size:11px; color:var(--muted); margin:0 1px}
+.mn-card.t-break{border-color:rgba(217,83,79,.55)}
+.mn-card.t-fix{border-color:rgba(92,196,137,.55)}
+.mn-card.t-map, .mn-card.t-rock{border-color:rgba(160,175,200,.45)}
+.mn-card.can{box-shadow:0 0 0 1px rgba(92,196,137,.7)}
+.mn-card.dim{opacity:.55}
+.mn-card.dim > span{filter:grayscale(.7)}
+.mn-card.sel{transform:translateY(-8px); box-shadow:0 0 0 2px var(--gold2), 0 8px 14px rgba(0,0,0,.5); opacity:1}
+.mn-cnt{position:absolute; top:-6px; right:-5px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--green); color:#062313; font:800 11px/18px var(--font); font-style:normal; box-shadow:0 1px 3px rgba(0,0,0,.6)}
+.mn-why{position:absolute; left:2px; right:2px; bottom:2px; padding:1px 0; border-radius:4px; background:rgba(120,25,20,.92); color:#ffd2cc; font-size:9.5px; font-style:normal; font-weight:700; line-height:1.2; text-align:center; overflow:hidden; word-break:keep-all}   /* long labels wrap at spaces instead of being clipped */
+.mn-acts{display:flex; gap:6px; justify-content:safe center; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none}   /* single row (swipe sideways when there are many targets) */
+.mn-acts::-webkit-scrollbar{display:none}
+.mn-acts .btn{flex:1 1 auto; min-width:64px}
+.mn-acts .mn-tg{flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; padding:6px 10px}
+.mn-empty{position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; text-align:center}
+.mn-ph{visibility:hidden}
+
+/* Name-chip details */
+.mn-psum{margin:0 0 8px; font-size:14px; color:var(--muted)}
+.mn-psum b{color:var(--ink)}
+.mn-plist{list-style:none; margin:0; padding:0; font-size:14px}
+.mn-plist li{padding:5px 2px; border-bottom:1px solid var(--line)}
+.mn-plist li.rcv{color:var(--muted); font-size:13px}
+
+/* Round result · map */
+.mn-over{position:absolute; top:4px; left:4px; right:4px; z-index:5; max-height:calc(100% - 8px); overflow-y:auto; animation:rise .25s}
+.mn-ovbox{padding:12px 14px 10px; border-radius:14px; background:rgba(20,14,9,.96); border:1px solid rgba(230,195,106,.5); box-shadow:0 20px 50px -10px rgba(0,0,0,.9)}
+.mn-ovbox.s{border-color:rgba(217,83,79,.65)}
+.mn-ovbox h3{margin:2px 0 4px; font-size:20px}
+.mn-ovbox p{margin:0 0 8px; font-size:13px; color:var(--muted)}
+.mn-ovbox p b{color:var(--ink)}
+.mn-ovbox ul{list-style:none; margin:0; padding:0}
+.mn-ovbox li{display:flex; align-items:center; gap:6px; padding:4px 2px; border-bottom:1px solid var(--line); font-size:13.5px}
+.mn-ovbox li.me{background:rgba(230,195,106,.08)}
+.mn-ovbox li .nm{flex:1; min-width:0; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.mn-ovbox .gain{width:30px; text-align:right; font-weight:800; color:var(--gold2)}
+.mn-ovbox .tot{width:48px; text-align:right; color:var(--muted); font-size:12.5px}
+.mn-ovfoot{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; font-size:12.5px; color:var(--muted)}
+.mn-peekbig{width:96px; height:96px; margin:4px auto 6px; border-radius:10px; overflow:hidden; background:radial-gradient(circle at 35% 30%, #7a5130, #5a3920 70%); box-shadow:0 0 0 2px #555}
+.mn-peekbig.gold{box-shadow:0 0 0 2px #f6cf4f, 0 0 24px rgba(246,207,79,.5)}
+
+@keyframes mnNew{from{transform:scale(1.35); opacity:0}}
+@keyframes mnFlip{from{transform:rotateY(90deg)}}
+@keyframes mnDust{from{transform:scale(.6); opacity:1} to{transform:scale(1.8); opacity:0}}
+@keyframes mnPulse{50%{box-shadow:0 0 0 3px rgba(245,220,148,.35)}}
+@keyframes mnPick{50%{box-shadow:0 0 0 4px rgba(217,83,79,.35)}}
+@keyframes mnHit{30%{transform:scale(1.08)}}
+.mn-lseen{padding:2px 4px; font-size:11px; color:var(--faint); background:#140e08; border-bottom:1px solid var(--line); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mn-lseen b{color:var(--muted)}
+.mn-seats.tight .mn-chip .l1 i.ai{display:none}
+.mn-gno{position:absolute; left:2px; bottom:0; font-style:normal; font-size:calc(var(--cs) * .26); font-weight:800; color:#fff3d6; text-shadow:0 1px 2px #000; line-height:1.15; pointer-events:none}
+.mn-acts .mn-dis{flex:0 0 auto; position:sticky; left:0; z-index:1; background:#2a1d12}
+
+/* ---------- Spectators (watching screens): no role, hand or buttons — the board and the seats get the room ---------- */
+.mn.spec .mn-dock, .mn.spec .mn-role{display:none}
+.mn.spec .mn-bar{min-height:34px}
+.mn-now{display:inline-flex; align-items:center; white-space:pre; padding:1px 8px 1px 3px; border-radius:999px; background:rgba(230,195,106,.14); border:1px solid rgba(230,195,106,.5); color:var(--gold2)}
+.mn-now b{color:var(--gold2); max-width:110px; overflow:hidden; text-overflow:ellipsis}
+.mn-now .av{margin-right:4px}
+/* Replays: the hand is shown, but there is nothing to press */
+.mn.rp .mn-card{cursor:default}
+
+/* ---------- Flying cards (ctx.fly) ---------- */
+.mn-pad{position:absolute; left:50%; top:50%; width:22px; height:30px; margin:-15px 0 0 -11px; opacity:0; pointer-events:none}
+.mn-fc{display:grid; place-items:center; border-radius:4px; border:1px solid rgba(230,195,106,.6); background:linear-gradient(180deg,#3d2a1a,#2a1c11);
+  font-size:13px; line-height:1; color:var(--ink); box-shadow:0 4px 10px rgba(0,0,0,.55); overflow:hidden; white-space:nowrap}
+.mn-fc.back{background:var(--bk); border:2px solid var(--bk-edge)}
+.mn-fc.break{border-color:rgba(255,110,95,.9)}
+.mn-fc.repair{border-color:rgba(92,196,137,.9); font-size:10px}
+.mn-fc.map, .mn-fc.rock{border-radius:6px; border-color:rgba(160,175,200,.7)}
+
+/* ---------- Landscape: chips in one row on top · board on the left · side column (info · goals · log · hand) ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:4/3){
+  .mn{display:grid; position:relative; --mn-side:clamp(280px, 36%, 400px);
+    grid-template-columns:minmax(0,1fr) var(--mn-side); grid-template-rows:auto auto auto minmax(0,1fr) auto;
+    grid-template-areas:"seats seats" "board bar" "board goals" "board log" "board dock"}
+  .mn-seats{grid-area:seats; grid-template-columns:repeat(var(--cols,5),minmax(0,210px)); justify-content:center; padding:4px 6px 4px}
+  .mn-bar{grid-area:bar; padding:2px 6px 2px 4px; min-width:0}
+  .mn-me{gap:6px; flex-wrap:wrap; row-gap:0}
+  .mn-goals{grid-area:goals; padding:2px 6px 4px 4px; min-width:0}
+  .mn-gp{padding:2px 5px}
+  .mn-body{display:contents}
+  .mn-mid{grid-area:board; height:auto!important; min-height:0; margin:0 0 6px 6px}
+  .mn-log{grid-area:log; margin:2px 6px 4px 4px}
+  .mn-over{grid-area:board; left:10px; right:4px}
+  .mn-dock{grid-area:dock; padding:4px 8px calc(6px + env(safe-area-inset-bottom,0px)); border-radius:12px 0 0 0}
+  .mn-hand{padding:8px 0 4px}
+  .mn-role{padding:3px 8px}
+}
+/* Phones held sideways: a narrow side column — shorter labels */
+@media (orientation:landscape) and (min-aspect-ratio:4/3) and (max-width:900px){
+  .mn-long, .mn-gl .lead{display:none}
+}
+/* Big landscape screens (computers, TVs across the room): larger chips, info and log */
+@media (orientation:landscape) and (min-aspect-ratio:4/3) and (min-height:600px){
+  .mn{--mn-side:clamp(300px, 34%, 460px)}
+  .mn.spec{--mn-side:clamp(300px, 30%, 420px)}   /* watching: the side column only holds the log */
+  .mn-seats{gap:6px; padding:6px 8px 6px}
+  .mn-chip{font-size:13.5px; padding:5px 8px; gap:2px; border-radius:11px}
+  .mn-chip .l1 .nm{font-size:15px}
+  .mn-chip .l2{font-size:13.5px; gap:8px}
+  .mn-chip .l3{font-size:13px; min-height:17px}
+  .mn-chip .mn-av.av{width:22px; height:22px; font-size:11px}
+  .mn-tools{font-size:16px}
+  .mn-bar{font-size:14px}
+  .mn-gl{font-size:13.5px}
+  .mn-gp b{font-size:15px}
+  .mn-log{font-size:14px}
+  .mn-lhead, .mn-lseen{font-size:12.5px}
+  .mn-log li b{max-width:120px}
+  .mn.spec .mn-bar{font-size:15.5px}
+  .mn.spec .mn-now b{max-width:200px}
+}

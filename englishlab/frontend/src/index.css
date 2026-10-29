@@ -1,0 +1,201 @@
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens ─────────────────────────────────────────────
+   Light values on :root, dark overrides on .dark.
+   Data colors are semantic and fixed across themes (only lightness shifts). */
+:root {
+  --bg: oklch(98.5% 0.003 260);
+  --surface: oklch(100% 0 0);
+  --surface-2: oklch(96.5% 0.004 260);
+  --surface-3: oklch(93% 0.006 260);
+  --border: oklch(90% 0.006 260);
+  --border-strong: oklch(82% 0.008 260);
+  --text: oklch(22% 0.015 260);
+  --text-muted: oklch(50% 0.015 260);
+  --text-subtle: oklch(64% 0.012 260);
+
+  --accent: oklch(56% 0.17 270);
+  --accent-soft: oklch(56% 0.17 270 / 0.12);
+  --accent-fg: oklch(99% 0 0);
+
+  --good: oklch(62% 0.16 155);
+  --warn: oklch(72% 0.16 75);
+  --bad: oklch(60% 0.21 25);
+
+  /* Training-load semantics */
+  --fitness: oklch(60% 0.17 255);
+  --fatigue: oklch(63% 0.2 350);
+  --form: oklch(64% 0.16 160);
+
+  /* Intensity zones Z1–Z5 */
+  --z1: oklch(70% 0.04 250);
+  --z2: oklch(64% 0.14 230);
+  --z3: oklch(66% 0.16 150);
+  --z4: oklch(74% 0.16 75);
+  --z5: oklch(61% 0.22 25);
+
+  /* Training types (validated all-pairs; race uses ink + ring as its secondary encoding) */
+  --rt-easy: #008300;
+  --rt-long: #2a78d6;
+  --rt-workout: #e87ba4;
+  --rt-recovery: #eda100;
+  --rt-race: var(--text);
+
+  --shadow-card: 0 1px 2px oklch(20% 0.02 260 / 0.06), 0 4px 16px -4px oklch(20% 0.02 260 / 0.08);
+}
+
+.dark {
+  --bg: oklch(15.5% 0.008 260);
+  --surface: oklch(19% 0.01 260);
+  --surface-2: oklch(22.5% 0.012 260);
+  --surface-3: oklch(27% 0.014 260);
+  --border: oklch(28% 0.012 260);
+  --border-strong: oklch(36% 0.014 260);
+  --text: oklch(95% 0.005 260);
+  --text-muted: oklch(72% 0.012 260);
+  --text-subtle: oklch(56% 0.012 260);
+
+  --accent: oklch(72% 0.14 275);
+  --accent-soft: oklch(72% 0.14 275 / 0.18);
+  --accent-fg: oklch(18% 0.04 275);
+
+  --good: oklch(72% 0.16 155);
+  --warn: oklch(80% 0.15 80);
+  --bad: oklch(68% 0.19 25);
+
+  --fitness: oklch(70% 0.15 255);
+  --fatigue: oklch(70% 0.18 350);
+  --form: oklch(74% 0.15 160);
+
+  --z1: oklch(66% 0.04 250);
+  --z2: oklch(70% 0.13 230);
+  --z3: oklch(74% 0.15 150);
+  --z4: oklch(81% 0.15 80);
+  --z5: oklch(68% 0.2 25);
+
+  --rt-easy: #008300;
+  --rt-long: #3987e5;
+  --rt-workout: #d55181;
+  --rt-recovery: #c98500;
+  --rt-race: var(--text);
+
+  --shadow-card: 0 1px 0 oklch(100% 0 0 / 0.03) inset, 0 8px 24px -8px oklch(0% 0 0 / 0.5);
+}
+
+@theme inline {
+  --font-sans: 'Pretendard Variable', Pretendard, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: Georgia, 'Noto Serif', 'Times New Roman', serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-subtle: var(--text-subtle);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-fitness: var(--fitness);
+  --color-fatigue: var(--fatigue);
+  --color-form: var(--form);
+  --color-z1: var(--z1);
+  --color-z2: var(--z2);
+  --color-z3: var(--z3);
+  --color-z4: var(--z4);
+  --color-z5: var(--z5);
+
+  --shadow-card: var(--shadow-card);
+  --radius-card: 1rem;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-bg text-text font-sans antialiased;
+    font-feature-settings: 'ss06';
+  }
+  * {
+    @apply border-border;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ── Foldable breakpoints ───────────────────────────────────────
+   Galaxy Z Fold 7: cover screen ≈ 410–420px wide (tall), inner screen ≈ 750–985px (near square).
+   fold  = unfolded inner screen and up → navigation rail instead of bottom tabs
+   split = wide enough for list + detail side by side */
+@theme {
+  --breakpoint-fold: 37.5rem;
+  --breakpoint-split: 46rem;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Phones: no grey flash on tap, no text-select on long-press of controls */
+  button,
+  a {
+    -webkit-touch-callout: none;
+  }
+}
+
+@utility shimmer {
+  background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 40%, var(--surface) 80%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@utility lift {
+  transition:
+    transform 180ms var(--ease-out-soft),
+    box-shadow 180ms var(--ease-out-soft),
+    border-color 180ms;
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+  }
+  &:active {
+    transform: translateY(0) scale(0.99);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+  }
+  .lift:hover {
+    transform: none;
+  }
+}
