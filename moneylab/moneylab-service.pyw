@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import signal
 import socket
 import socketserver
 import subprocess
@@ -360,6 +361,8 @@ def main(argv: list[str]) -> None:
         return
 
     service = Service()
+    if not WINDOWS:  # systemctl stop: shut the server down cleanly instead of dying mid-request
+        signal.signal(signal.SIGTERM, lambda *_: service.stop.set())
     threading.Thread(target=serve_control, args=(service, sock), daemon=True).start()
     if "--open" in argv:
         def opener() -> None:
